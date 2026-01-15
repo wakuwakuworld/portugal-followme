@@ -34,7 +34,7 @@
                     <h1 class="text-2xl font-black text-slate-800 tracking-tight">葡萄牙跟我走</h1>
                 </div>
                 <div class="flex flex-wrap justify-center gap-2">
-                    <button v-for="city in cities" :key="city" @click="currentCity = city; currentCategory = 'all'" 
+                    <button v-for="city in cities" :key="city" @click="currentCity = city" 
                         :class="['px-5 py-2 rounded-full text-sm font-bold transition-all', currentCity === city ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50']">
                         {{ city }}
                     </button>
@@ -57,6 +57,9 @@
                     <div class="flex justify-between items-start mb-3">
                         <span :class="['text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider', getCategoryColor(item.category)]">
                             <i :class="getCategoryIcon(item.category)" class="mr-1"></i> {{ getCategoryName(item.category) }}
+                        </span>
+                        <span v-if="currentCity === '全區'" class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded">
+                            {{ item.city.split('（')[0].split(' ')[0] }}
                         </span>
                     </div>
 
@@ -82,7 +85,7 @@
         </main>
 
         <footer class="text-center py-8 text-slate-400 text-xs border-t border-slate-200 mt-12">
-            <p>© 2026 葡萄牙旅遊指南 | 純文字極速版</p>
+            <p>© 2026 葡萄牙旅遊規劃師 - 完美假期從這裡開始</p>
         </footer>
     </div>
 
@@ -91,12 +94,12 @@
 
         createApp({
             setup() {
-                // 狀態
-                const currentCity = ref("里斯本（Lisboa）");
+                // 狀態：預設改為 '全區'
+                const currentCity = ref("全區");
                 const currentCategory = ref("all");
 
-                // 資料定義
-                const cities = ["里斯本（Lisboa）", "貝倫區 (Belém)", "波多（Porto）"];
+                // 資料定義：加入 '全區' 選項
+                const cities = ["全區", "里斯本（Lisboa）", "貝倫區 (Belém)", "波多（Porto）"];
                 const categories = [
                     { id: "all", name: "全部", icon: "fa-solid fa-layer-group" },
                     { id: "spot", name: "景點", icon: "fa-solid fa-camera" },
@@ -106,7 +109,7 @@
                     { id: "other", name: "其他", icon: "fa-solid fa-note-sticky" }
                 ];
 
-                // 旅遊資料 (已移除圖片欄位，並確保雙引號正確)
+                // 旅遊資料
                 const data = ref([
                     // --- 里斯本 ---
                     { city: "里斯本（Lisboa）", category: "spot", name: "里斯本主教座堂 Sé de Lisboa", desc: "里斯本最古老的天主教座堂。", map: "https://maps.app.goo.gl/MLedpdnisQtUsmhE8" },
@@ -163,10 +166,10 @@
                     { city: "波多（Porto）", category: "winery", name: "Sandeman", desc: "標誌性造型的全球知名波特酒莊。", map: "https://maps.app.goo.gl/8RiCAKHYGvaXSL7r7" }
                 ]);
 
-                // 篩選邏輯
+                // 篩選邏輯：新增 '全區' 的判斷
                 const filteredList = computed(() => {
                     return data.value.filter(item => {
-                        const cityMatch = item.city === currentCity.value;
+                        const cityMatch = currentCity.value === "全區" || item.city === currentCity.value;
                         const categoryMatch = currentCategory.value === "all" || item.category === currentCategory.value;
                         return cityMatch && categoryMatch;
                     });
