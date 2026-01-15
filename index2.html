@@ -8,25 +8,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
-        .card-hover { transition: all 0.3s ease; border-radius: 1rem; }
-        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #e2e8f0; }
-        .img-overlay { background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%); }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f1f5f9; }
+        .card-hover { transition: all 0.2s ease; border-left: 5px solid transparent; }
+        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        
+        /* 根據分類設定不同顏色的左側邊條 */
+        .border-spot { border-left-color: #ef4444; }      /* 紅色 - 景點 */
+        .border-restaurant { border-left-color: #f59e0b; } /* 橘色 - 餐廳 */
+        .border-shopping { border-left-color: #3b82f6; }   /* 藍色 - 購物 */
+        .border-winery { border-left-color: #8b5cf6; }     /* 紫色 - 酒莊 */
+        .border-other { border-left-color: #64748b; }      /* 灰色 - 其他 */
+
+        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
     <div id="app">
-        <nav class="glass-nav sticky top-0 z-50 px-6 py-4">
+        <nav class="glass-nav sticky top-0 z-50 px-6 py-4 shadow-sm">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-plane-departure text-indigo-600 text-2xl"></i>
+                <div class="flex items-center gap-3">
+                    <div class="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-lg">
+                        <i class="fa-solid fa-map text-xl"></i>
+                    </div>
                     <h1 class="text-2xl font-black text-slate-800 tracking-tight">葡萄牙跟我走</h1>
                 </div>
                 <div class="flex flex-wrap justify-center gap-2">
                     <button v-for="city in cities" :key="city" @click="currentCity = city; currentCategory = 'all'" 
-                        :class="['px-5 py-2 rounded-full text-sm font-bold transition-all', currentCity === city ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">
+                        :class="['px-5 py-2 rounded-full text-sm font-bold transition-all', currentCity === city ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50']">
                         {{ city }}
                     </button>
                 </div>
@@ -36,47 +45,44 @@
         <main class="max-w-7xl mx-auto px-6 py-10">
             <div class="flex flex-wrap gap-3 mb-10 justify-center">
                 <button v-for="cat in categories" :key="cat.id" @click="currentCategory = cat.id"
-                    :class="['flex items-center gap-2 px-6 py-2 rounded-xl border transition-all font-bold', currentCategory === cat.id ? 'bg-slate-800 border-slate-800 text-white shadow-lg' : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-500 hover:text-indigo-600']">
+                    :class="['flex items-center gap-2 px-6 py-2.5 rounded-xl border transition-all font-bold text-sm', currentCategory === cat.id ? 'bg-slate-800 border-slate-800 text-white shadow-lg' : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-400 hover:text-indigo-600']">
                     <i :class="cat.icon"></i> {{ cat.name }}
                 </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div v-for="(item, index) in filteredList" :key="index" class="card-hover bg-white overflow-hidden flex flex-col border border-slate-100">
-                    <div class="relative h-60 bg-slate-200">
-                        <img :src="getImageUrl(item, index)" 
-                             loading="lazy"
-                             :alt="item.name" 
-                             class="w-full h-full object-cover">
-                        <div class="absolute inset-0 img-overlay"></div>
-                        <div class="absolute bottom-4 left-5">
-                            <span class="text-[10px] font-black px-3 py-1 rounded bg-indigo-600 text-white tracking-widest uppercase">
-                                {{ getCategoryName(item.category) }}
-                            </span>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div v-for="(item, index) in filteredList" :key="index" 
+                     :class="['card-hover bg-white rounded-xl shadow-sm p-6 flex flex-col h-full border border-slate-100', 'border-' + item.category]">
+                    
+                    <div class="flex justify-between items-start mb-3">
+                        <span :class="['text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider', getCategoryColor(item.category)]">
+                            <i :class="getCategoryIcon(item.category)" class="mr-1"></i> {{ getCategoryName(item.category) }}
+                        </span>
                     </div>
 
-                    <div class="p-6 flex-grow">
-                        <h3 class="text-xl font-black text-slate-800 mb-3 leading-tight">{{ item.name }}</h3>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-4">{{ item.desc }}</p>
+                    <div class="flex-grow">
+                        <h3 class="text-xl font-black text-slate-800 mb-3 leading-snug">{{ item.name }}</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-4 text-justify">{{ item.desc }}</p>
                     </div>
 
-                    <div class="px-6 pb-6">
-                        <a :href="item.map" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-all font-bold text-sm">
-                            <i class="fa-solid fa-location-arrow"></i> 開啟 Google 地圖
+                    <div class="pt-4 border-t border-slate-50 mt-2">
+                        <a :href="item.map" target="_blank" class="flex items-center justify-center gap-2 w-full py-2.5 bg-slate-50 text-indigo-600 rounded-lg hover:bg-indigo-600 hover:text-white transition-all font-bold text-sm group">
+                            <i class="fa-solid fa-location-dot group-hover:animate-bounce"></i> 開啟 Google 地圖
                         </a>
                     </div>
                 </div>
             </div>
 
             <div v-if="filteredList.length === 0" class="text-center py-20 text-slate-400">
-                <i class="fa-solid fa-folder-open text-5xl mb-4"></i>
-                <p class="text-lg font-bold">這個分類目前沒有資料</p>
+                <div class="bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-inbox text-2xl"></i>
+                </div>
+                <p class="text-base font-bold">這個分類目前沒有資料</p>
             </div>
         </main>
 
-        <footer class="text-center py-10 text-slate-400 text-xs border-t border-slate-200 mt-10">
-            <p>© 2026 葡萄牙旅遊指南 | 祝您旅途愉快</p>
+        <footer class="text-center py-8 text-slate-400 text-xs border-t border-slate-200 mt-12">
+            <p>© 2026 葡萄牙旅遊指南 | 純文字極速版</p>
         </footer>
     </div>
 
@@ -85,11 +91,11 @@
 
         createApp({
             setup() {
-                // 狀態設定
+                // 狀態
                 const currentCity = ref("里斯本（Lisboa）");
                 const currentCategory = ref("all");
 
-                // 選單資料
+                // 資料定義
                 const cities = ["里斯本（Lisboa）", "貝倫區 (Belém)", "波多（Porto）"];
                 const categories = [
                     { id: "all", name: "全部", icon: "fa-solid fa-layer-group" },
@@ -97,27 +103,10 @@
                     { id: "restaurant", name: "餐廳", icon: "fa-solid fa-utensils" },
                     { id: "shopping", name: "購物", icon: "fa-solid fa-bag-shopping" },
                     { id: "winery", name: "酒莊", icon: "fa-solid fa-wine-glass" },
-                    { id: "other", name: "其他", icon: "fa-solid fa-star" }
+                    { id: "other", name: "其他", icon: "fa-solid fa-note-sticky" }
                 ];
 
-                // 生成穩定的圖片網址 (使用 lock 參數避免重複)
-                const getImageUrl = (item, index) => {
-                    // 根據類別給定不同的關鍵字，提高圖片關聯度
-                    let keywords = "portugal,scenery";
-                    if (item.category === 'spot') keywords = "portugal,architecture,landmark";
-                    if (item.category === 'restaurant') keywords = "portugal,food,dish";
-                    if (item.category === 'shopping') keywords = "store,shopping";
-                    if (item.category === 'winery') keywords = "wine,vineyard,barrels";
-                    if (item.name.includes("書店")) keywords = "library,books";
-                    if (item.name.includes("海鮮")) keywords = "seafood";
-                    
-                    // 使用 uniqueId (由名稱長度與索引組合) 來鎖定圖片，確保每次重新整理都一樣
-                    // 這樣每個景點都會有自己專屬的一張圖，不會全部長一樣
-                    const uniqueId = item.name.length + index * 55;
-                    return `https://loremflickr.com/800/600/${keywords}?lock=${uniqueId}`;
-                };
-
-                // 旅遊資料 (全部使用雙引號，避免單引號 ' 造成語法錯誤)
+                // 旅遊資料 (已移除圖片欄位，並確保雙引號正確)
                 const data = ref([
                     // --- 里斯本 ---
                     { city: "里斯本（Lisboa）", category: "spot", name: "里斯本主教座堂 Sé de Lisboa", desc: "里斯本最古老的天主教座堂。", map: "https://maps.app.goo.gl/MLedpdnisQtUsmhE8" },
@@ -166,7 +155,7 @@
                     { city: "波多（Porto）", category: "restaurant", name: "Taberna Dos Mercadores", desc: "評價極高的在地酒館餐廳。", map: "https://maps.app.goo.gl/hanPxNtkfSxNMpBs9" },
                     { city: "波多（Porto）", category: "other", name: "Gaia Cable Car", desc: "搭乘纜車俯瞰杜羅河美景。", map: "https://maps.app.goo.gl/4rBy45uyT7LzgA3i9" },
                     
-                    // --- 波多酒莊 (全數標記為 winery，且名稱使用雙引號避免語法錯誤) ---
+                    // --- 波多酒莊 ---
                     { city: "波多（Porto）", category: "winery", name: "Caves Ferreira", desc: "歷史悠久的波特酒莊。", map: "https://maps.app.goo.gl/NicYzT43qeWz4E8p9" },
                     { city: "波多（Porto）", category: "winery", name: "Casa Ferreirinha", desc: "優質波特酒與葡萄酒莊。", map: "https://maps.app.goo.gl/V252wDcWCMfsYyHy5" },
                     { city: "波多（Porto）", category: "winery", name: "Graham's Port Lodge", desc: "知名波特酒莊，提供品酒體驗。", map: "https://maps.app.goo.gl/TA6GgJtcUF9MLFwo8" },
@@ -183,13 +172,31 @@
                     });
                 });
 
-                // 取得分類名稱
+                // 輔助功能：取得分類名稱
                 const getCategoryName = (id) => {
                     const found = categories.find(c => c.id === id);
                     return found ? found.name : "其他";
                 };
 
-                return { currentCity, currentCategory, cities, categories, filteredList, getCategoryName, getImageUrl };
+                // 輔助功能：取得分類 icon
+                const getCategoryIcon = (id) => {
+                    const found = categories.find(c => c.id === id);
+                    return found ? found.icon : "fa-solid fa-circle";
+                };
+
+                // 輔助功能：取得分類顏色 (Tailwind class)
+                const getCategoryColor = (id) => {
+                    const map = {
+                        'spot': 'bg-red-100 text-red-600',
+                        'restaurant': 'bg-amber-100 text-amber-600',
+                        'shopping': 'bg-blue-100 text-blue-600',
+                        'winery': 'bg-purple-100 text-purple-600',
+                        'other': 'bg-slate-200 text-slate-600'
+                    };
+                    return map[id] || 'bg-gray-100 text-gray-600';
+                };
+
+                return { currentCity, currentCategory, cities, categories, filteredList, getCategoryName, getCategoryIcon, getCategoryColor };
             }
         }).mount('#app');
     </script>
