@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>葡萄牙旅遊指南 | 里斯本 & 波多</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
+        .card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <nav class="glass-nav sticky top-0 z-50 border-b border-gray-200 px-4 py-3">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <h1 class="text-2xl font-bold text-indigo-900"><i class="fa-solid fa-passport mr-2"></i>葡萄牙跟我走</h1>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button v-for="city in cities" :key="city" @click="currentCity = city" 
+                        :class="['px-4 py-1 rounded-full text-sm font-medium transition', currentCity === city ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200']">
+                        {{ city }}
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-6xl mx-auto px-4 py-8">
+            <div class="flex flex-wrap gap-4 mb-8 justify-center">
+                <button v-for="cat in categories" :key="cat.id" @click="currentCategory = cat.id"
+                    :class="['flex items-center gap-2 px-4 py-2 rounded-lg border transition', currentCategory === cat.id ? 'bg-white border-indigo-600 text-indigo-600 shadow-md' : 'bg-transparent border-gray-300 text-gray-500 hover:border-indigo-400']">
+                    <i :class="cat.icon"></i> {{ cat.name }}
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div v-for="item in filteredList" :key="item.name" class="card-hover bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="p-5 flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-bold px-2 py-1 rounded bg-indigo-50 text-indigo-600 uppercase">{{ getCategoryName(item.category) }}</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">{{ item.name }}</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">介紹：{{ item.desc }}</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 border-t border-gray-100">
+                        <a :href="item.map" target="_blank" class="flex items-center justify-center gap-2 w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-medium">
+                            <i class="fa-solid fa-location-dot"></i> 查看 Google Map
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="filteredList.length === 0" class="text-center py-20 text-gray-400">
+                <i class="fa-solid fa-magnifying-glass text-4xl mb-4"></i>
+                <p>此類別目前沒有資訊</p>
+            </div>
+        </main>
+
+        <footer class="text-center py-10 text-gray-400 text-sm border-t border-gray-200 mt-10">
+            © 2026 葡萄牙旅遊規劃師 - 完美假期從這裡開始
+        </footer>
+    </div>
+
+    <script>
+        const { createApp, ref, computed } = Vue;
+
+        createApp({
+            setup() {
+                const currentCity = ref('里斯本（Lisboa）');
+                const currentCategory = ref('all');
+
+                const cities = ['里斯本（Lisboa）', '貝倫區 (Belém)', '波多（Porto）'];
+                const categories = [
+                    { id: 'all', name: '全部', icon: 'fa-solid fa-border-all' },
+                    { id: 'spot', name: '景點', icon: 'fa-solid fa-camera-retro' },
+                    { id: 'restaurant', name: '餐廳', icon: 'fa-solid fa-utensils' },
+                    { id: 'shopping', name: '購物', icon: 'fa-solid fa-bag-shopping' },
+                    { id: 'winery', name: '酒莊', icon: 'fa-solid fa-wine-glass' },
+                    { id: 'other', name: '其他', icon: 'fa-solid fa-ellipsis' }
+                ];
+
+                const data = ref([
+                    // 里斯本 [cite: 1]
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '里斯本主教座堂( Sé de Lisboa)', desc: '里斯本最古老的天主教座堂。', map: 'https://maps.app.goo.gl/MLedpdnisQtUsmhE8' }, // 
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '太陽門景觀臺(Miradouro das Portas do Sol)', desc: '可俯瞰阿爾法瑪區紅瓦屋頂的知名景觀台。', map: 'https://maps.app.goo.gl/SL2WCo3htzJBZKMJ8' }, // [cite: 4, 5]
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '奧古斯塔街拱門(Arco Triunfal da Rua August)', desc: '象徵 1755 年大地震後重建的標誌性拱門。', map: 'https://maps.app.goo.gl/UYiEZN4ZBoxZbZ779' }, // [cite: 6, 7]
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '無花果廣場(Praça da Figueira)', desc: '里斯本市中心的熱鬧廣場。', map: 'https://maps.app.goo.gl/CdXcBQJ1wkLy54aq7' }, // [cite: 8, 9]
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '聖胡斯塔升降機（Elevador de Santa Justa）', desc: '新哥德式鐵製垂直升降機。', map: 'https://maps.app.goo.gl/eNiWvb2sM8UHBM28A' }, // [cite: 10, 11]
+                    { city: '里斯本（Lisboa）', category: 'spot', name: 'Livraria Bertrand Chiado', desc: '金氏世界紀錄認證世界最老的書店。', map: 'https://maps.app.goo.gl/2YN5iiZrpbjqhK4H6' }, // [cite: 12, 13, 14]
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '阿爾坎塔拉聖伯多祿花園(Miradouro de São Pedro de Alcântara)', desc: '可飽覽聖若熱城堡與城市全景。', map: 'https://maps.app.goo.gl/7dXH5cHa9FbZLvfs8' }, // [cite: 15, 16]
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '聖若熱城堡（ Castelo de S. Jorge）', desc: '矗立山丘上的古老堡壘。', map: 'https://maps.app.goo.gl/nRC14bwVBC4VrAG97' }, // [cite: 17, 18]
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '恩寵觀景台(Miradouro da Graça)', desc: '深受當地人喜愛的觀景點。', map: 'https://maps.app.goo.gl/AwCNAsJuQ4i61Wxr5' }, // [cite: 19, 20]
+                    { city: '里斯本（Lisboa）', category: 'other', name: 'Ponte 25 de Abril', desc: '橫跨特茹河的懸索大橋。', map: 'https://maps.app.goo.gl/H9YKDvV7EDwye1yp9' }, // [cite: 21, 22]
+                    { city: '里斯本（Lisboa）', category: 'other', name: 'Tram 28(Elétrico 28)', desc: '著名的經典黃色復古電車。', map: 'https://maps.app.goo.gl/FxjEM13NYANKc9ux5' }, // [cite: 23, 24]
+                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Restaurant - Cervejaria Ramiro', desc: '詹姆士推薦，超好吃蝦料理。', map: 'https://maps.app.goo.gl/2ykMivkJaZwg6LpP6' }, // [cite: 25, 26, 27]
+                    { city: '里斯本（Lisboa）', category: 'other', name: '巴西人咖啡館(A Brasileira)', desc: '歷史悠久的經典咖啡館。', map: 'https://maps.app.goo.gl/wUgFjZuK4sc2YLKA8' }, // [cite: 28, 29]
+                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Maria Catita', desc: '道地的葡萄牙料理餐廳。', map: 'https://maps.app.goo.gl/kPwPEqePWKb1EU1C8' }, // [cite: 30, 31, 32]
+                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Uma Marisqueira', desc: '知名海鮮餐廳，提供葡式海鮮燉飯。', map: 'https://maps.app.goo.gl/GE9yW2fTNAiNvBCX7' }, // [cite: 33, 34, 35]
+                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'A Merendinha do Arco Bandeira', desc: '當地特色餐飲小店。', map: 'https://maps.app.goo.gl/Q5Rz5giXiTjSv2Y27' }, // [cite: 36, 37]
+                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Mini Bar - José Avillez', desc: '創意精緻料理餐酒館。', map: 'https://maps.app.goo.gl/33vkxnssxAsYjneSA' }, // [cite: 38, 39]
+                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Belcanto', desc: '知名的高級葡萄牙餐廳。', map: 'https://maps.app.goo.gl/NkUNQAmq6PUxZ8fG8' }, // [cite: 40, 41, 42]
+                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Time Out Market', desc: '集結眾多名店的美食廣場。', map: 'https://maps.app.goo.gl/zqWvdYtGXxbNz4MC9' }, // [cite: 43, 44]
+                    { city: '里斯本（Lisboa）', category: 'shopping', name: '里斯本罐頭工坊(Conserveira de Lisboa)', desc: '傳承百年的復古魚罐頭專賣店。', map: 'https://maps.app.goo.gl/KR1jHAaHNwQp5Pzs7' }, // [cite: 45, 46]
+                    { city: '里斯本（Lisboa）', category: 'shopping', name: 'Cutipol (Lisboa)', desc: '葡萄牙頂級精品餐具。', map: 'https://maps.app.goo.gl/B9s4C79Rrp5Qybjr6' }, // [cite: 47, 48]
+                    
+                    // 貝倫區 [cite: 49]
+                    { city: '貝倫區 (Belém)', category: 'spot', name: '熱羅尼莫斯修道院(Mosteiro dos Jerónimos)', desc: '曼努埃爾式建築傑作，世界文化遺產。', map: 'https://maps.app.goo.gl/HUHuJvnLtS3GXrzY8' }, // [cite: 50, 51]
+                    { city: '貝倫區 (Belém)', category: 'spot', name: '發現者紀念碑(Padrão dos Descobrimentos)', desc: '紀念航海時代發現者的宏偉紀念碑。', map: 'https://maps.app.goo.gl/wxRGerNAY7RSbh4EA' }, // [cite: 52, 53]
+                    { city: '貝倫區 (Belém)', category: 'spot', name: '貝倫塔(Torre de Belém)', desc: '特茹河畔的歷史防禦塔與地標。', map: 'https://maps.app.goo.gl/mqKsB9RYcg4opMhW6' }, // [cite: 54, 55]
+                    { city: '貝倫區 (Belém)', category: 'restaurant', name: 'Casa Pastéis de Belém', desc: '葡式蛋塔的發源地，必嚐百年老店。', map: 'https://maps.app.goo.gl/ZuEhMgGqpvE4ESh57' }, // [cite: 56, 57]
+                    
+                    // 波多 [cite: 58]
+                    { city: '波多（Porto）', category: 'spot', name: '波爾圖主教座堂(Sé do Porto)', desc: '波多最古老且宏偉的建築之一。', map: 'https://maps.app.goo.gl/DbcoTjv5jWVFfcEG6' }, // [cite: 59, 60]
+                    { city: '波多（Porto）', category: 'spot', name: '路易一世大橋(Ponte Luís I)', desc: '橫跨杜羅河的知名鐵製雙層拱橋。', map: 'https://maps.app.goo.gl/UvcJYzQJ88sSqW8t8' }, // [cite: 61, 62]
+                    { city: '波多（Porto）', category: 'spot', name: '萊羅書店(Livraria Lello)', desc: '全球最美書店之一，內部裝潢華麗。', map: 'https://maps.app.goo.gl/ykeG1KckNBNS27bh7' }, // [cite: 63, 64]
+                    { city: '波多（Porto）', category: 'shopping', name: 'Mercado do Bolhão', desc: '最具代表性的在地傳統市場。', map: 'https://maps.app.goo.gl/S2iApZ2BF6n4Y7JN7' }, // [cite: 65, 66]
+                    { city: '波多（Porto）', category: 'spot', name: '阿瑪斯教堂(Capela das Almas de Santa Catarina)', desc: '外牆覆蓋絕美藍色瓷磚。', map: 'https://maps.app.goo.gl/wVdP9zzYNq3PiM6c7' }, // [cite: 67, 68]
+                    { city: '波多（Porto）', category: 'spot', name: 'Porto São Bento', desc: '世界最美火車站，擁有壯觀壁畫。', map: 'https://maps.app.goo.gl/59UpuwZoMWsDMbpD8' }, // [cite: 69, 70, 71]
+                    { city: '波多（Porto）', category: 'spot', name: 'Ribeira do Porto', desc: '杜羅河畔的歷史老城區。', map: 'https://maps.app.goo.gl/dPsKEaAUCw69Bxpx5' }, // [cite: 72, 73]
+                    { city: '波多（Porto）', category: 'restaurant', name: 'Majestic Café', desc: '全球十大最美咖啡館之一。', map: 'https://maps.app.goo.gl/hBAnZ3HsUHMpQHUV8' }, // [cite: 74, 75]
+                    { city: '波多（Porto）', category: 'restaurant', name: 'Casa Guedes Tradicional', desc: '傳統風味，好吃的豬扒包。', map: 'https://maps.app.goo.gl/2k8NFP6kYnRcctY99' }, // [cite: 76, 77, 78]
+                    { city: '波多（Porto）', category: 'restaurant', name: 'McDonald\'s - Imperial', desc: '號稱全球最美的麥當勞。', map: 'https://maps.app.goo.gl/sTz98GRWHjvoz2Sg7' }, // [cite: 79, 80, 81]
+                    { city: '波多（Porto）', category: 'shopping', name: 'Claus Porto', desc: '頂級精品香氛與香皂。', map: 'https://maps.app.goo.gl/PgpmsQNogecXrnmA9' }, // [cite: 82, 83]
+                    { city: '波多（Porto）', category: 'shopping', name: 'Castelbel - Palácio das Artes', desc: '精緻的葡萄牙香氛店。', map: 'https://maps.app.goo.gl/bhcMVFPeWqV1df3r9' }, // [cite: 84, 85]
+                    { city: '波多（Porto）', category: 'restaurant', name: 'O Caraças', desc: '便宜划算的一餐。', map: 'https://maps.app.goo.gl/uiqSvj7zLNsUwha59' }, // [cite: 86, 87, 88]
+                    { city: '波多（Porto）', category: 'restaurant', name: 'La Ricotta', desc: '優質的在地風味餐廳。', map: 'https://maps.app.goo.gl/TH1q3kKRTe5FhJFm8' }, // [cite: 89, 90]
+                    { city: '波多（Porto）', category: 'restaurant', name: 'Adega São Nicolau', desc: '氛圍獨特，像酒窖一樣的餐廳。', map: 'https://maps.app.goo.gl/HSiHaQtbCsUCfA5Q9' }, // [cite: 91, 92, 93]
+                    { city: '波多（Porto）', category: 'restaurant', name: 'Taberna Dos Mercadores', desc: '評價極高的在地酒館餐廳。', map: 'https://maps.app.goo.gl/hanPxNtkfSxNMpBs9' }, // [cite: 94, 95]
+                    { city: '波多（Porto）', category: 'other', name: 'Gaia Cable Car - Jardim do Morro station', desc: '搭乘纜車俯瞰杜羅河美景。', map: 'https://maps.app.goo.gl/4rBy45uyT7LzgA3i9' }, // [cite: 96, 97]
+                    { city: '波多（Porto）', category: 'winery', name: 'Caves Ferreira', desc: '歷史悠久的波特酒莊。', map: 'https://maps.app.goo.gl/NicYzT43qeWz4E8p9' }, // [cite: 98, 99, 100]
+                    { city: '波多（Porto）', category: 'winery', name: 'Casa Ferreirinha', desc: '優質波特酒與葡萄酒莊。', map: 'https://maps.app.goo.gl/V252wDcWCMfsYyHy5' }, // [cite: 101, 102]
+                    { city: '波多（Porto）', category: 'winery', name: '格雷厄姆(Graham\'s Port Lodge)', desc: '知名波特酒莊，提供品酒體驗。', map: 'https://maps.app.goo.gl/TA6GgJtcUF9MLFwo8' }, // [cite: 103, 104]
+                    { city: '波多（Porto）', category: 'winery', name: 'Caves Cálem', desc: '河岸知名酒莊，常有 Fado 表演。', map: 'https://maps.app.goo.gl/NFCfa7KviMC68tJ96' }, // [cite: 105, 106]
+                    { city: '波多（Porto）', category: 'winery', name: 'Sandeman', desc: '標誌性造型的全球知名波特酒莊。', map: 'https://maps.app.goo.gl/8RiCAKHYGvaXSL7r7' } // [cite: 107, 108]
+                ]);
+
+                const filteredList = computed(() => {
+                    return data.value.filter(item => {
+                        const cityMatch = item.city === currentCity.value;
+                        const categoryMatch = currentCategory.value === 'all' || item.category === currentCategory.value;
+                        return cityMatch && categoryMatch;
+                    });
+                });
+
+                const getCategoryName = (id) => {
+                    return categories.find(c => c.id === id)?.name || '其他';
+                };
+
+                return { currentCity, currentCategory, cities, categories, filteredList, getCategoryName };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
