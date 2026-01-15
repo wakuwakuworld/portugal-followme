@@ -3,32 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>葡萄牙旅遊指南 | 里斯本 & 波多</title>
+    <title>葡萄牙旅遊指南</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f1f5f9; }
-        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .card-hover:hover { transform: translateY(-8px); shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
-        .glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); }
-        .img-gradient { background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.7)); }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); }
+        .card-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); transition: all 0.3s ease; }
+        .card-shadow:hover { transform: translateY(-4px); box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.1); }
+        .img-overlay { background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6) 100%); }
     </style>
 </head>
 <body>
     <div id="app">
-        <nav class="glass-nav sticky top-0 z-50 border-b border-gray-200 px-6 py-4">
-            <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6">
-                <div class="flex items-center gap-3">
-                    <div class="bg-indigo-600 text-white p-2 rounded-lg">
-                        <i class="fa-solid fa-map-location-dot text-xl"></i>
-                    </div>
-                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">葡萄牙跟我走</h1>
+        <nav class="glass-nav sticky top-0 z-50 border-b border-slate-200 px-6 py-4">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-compass text-indigo-600 text-2xl"></i>
+                    <h1 class="text-xl font-black tracking-tight">葡萄牙跟我走</h1>
                 </div>
-                <div class="flex flex-wrap justify-center gap-3">
-                    <button v-for="city in cities" :key="city" @click="currentCity = city" 
-                        :class="['px-6 py-2 rounded-full text-sm font-bold transition-all shadow-sm', currentCity === city ? 'bg-indigo-600 text-white shadow-indigo-200' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200']">
+                <div class="flex gap-2">
+                    <button v-for="city in cities" @click="currentCity = city" 
+                        :class="['px-5 py-2 rounded-full text-sm font-bold transition-all', currentCity === city ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">
                         {{ city }}
                     </button>
                 </div>
@@ -36,50 +34,36 @@
         </nav>
 
         <main class="max-w-7xl mx-auto px-6 py-10">
-            <div class="flex flex-wrap gap-3 mb-12 justify-start md:justify-center">
-                <button v-for="cat in categories" :key="cat.id" @click="currentCategory = cat.id"
-                    :class="['flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all font-medium', currentCategory === cat.id ? 'bg-slate-800 border-slate-800 text-white shadow-lg' : 'bg-white border-slate-200 text-slate-500 hover:border-indigo-400 hover:text-indigo-500']">
+            <div class="flex flex-wrap gap-2 mb-10">
+                <button v-for="cat in categories" @click="currentCategory = cat.id"
+                    :class="['flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold border transition-all', currentCategory === cat.id ? 'bg-slate-800 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-400']">
                     <i :class="cat.icon"></i> {{ cat.name }}
                 </button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div v-for="item in filteredList" :key="item.name" class="card-hover bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
-                    <div class="relative h-52 overflow-hidden">
-                        <img :src="`https://source.unsplash.com/800x600/?portugal,${item.keyword || item.name}`" :alt="item.name" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 img-gradient"></div>
-                        <div class="absolute bottom-4 left-4">
-                            <span class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-600 text-white tracking-wider uppercase shadow-sm">
-                                {{ getCategoryName(item.category) }}
-                            </span>
+                <div v-for="item in filteredList" :key="item.name" class="card-shadow bg-white rounded-3xl overflow-hidden flex flex-col border border-slate-50">
+                    <div class="relative h-60">
+                        <img :src="item.image" :alt="item.name" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 img-overlay"></div>
+                        <div class="absolute bottom-4 left-5">
+                            <span class="bg-indigo-600 text-white text-[10px] font-black px-3 py-1 rounded-md uppercase tracking-wider">必去景點</span>
                         </div>
                     </div>
 
-                    <div class="p-6 flex-grow">
-                        <h3 class="text-xl font-bold text-slate-800 mb-3">{{ item.name }}</h3>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-6">{{ item.desc }}</p>
+                    <div class="p-8 flex-grow">
+                        <h3 class="text-2xl font-black text-slate-800 mb-3">{{ item.name }}</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">{{ item.desc }}</p>
                     </div>
 
-                    <div class="px-6 pb-6">
-                        <a :href="item.map" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 bg-slate-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all font-bold border border-indigo-100">
-                            <i class="fa-solid fa-compass"></i> 開啟 Google 地圖
+                    <div class="px-8 pb-8 mt-auto">
+                        <a :href="item.map" target="_blank" class="flex items-center justify-center gap-2 w-full py-4 bg-indigo-50 text-indigo-700 rounded-2xl hover:bg-indigo-600 hover:text-white transition-all font-black text-sm">
+                            <i class="fa-brands fa-google text-lg"></i> 開啟 Google 地圖
                         </a>
                     </div>
                 </div>
             </div>
-
-            <div v-if="filteredList.length === 0" class="text-center py-32">
-                <div class="bg-slate-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fa-solid fa-wind text-slate-300 text-3xl"></i>
-                </div>
-                <p class="text-slate-400 font-medium">此類別目前沒有相關推薦</p>
-            </div>
         </main>
-
-        <footer class="max-w-7xl mx-auto text-center py-12 text-slate-400 text-sm border-t border-slate-200 mt-10">
-            <p class="font-medium">2026 葡萄牙專業旅遊指南</p>
-            <p class="mt-1">由 專業旅遊規劃師 & 前端設計師 聯合製作</p>
-        </footer>
     </div>
 
     <script>
@@ -87,69 +71,44 @@
 
         createApp({
             setup() {
-                const currentCity = ref('里斯本（Lisboa）');
+                const currentCity = ref('里斯本 (Lisboa)');
                 const currentCategory = ref('all');
 
-                const cities = ['里斯本（Lisboa）', '貝倫區 (Belém)', '波多（Porto）'];
+                const cities = ['里斯本 (Lisboa)', '貝倫區 (Belém)', '波多 (Porto)'];
                 const categories = [
-                    { id: 'all', name: '全部探險', icon: 'fa-solid fa-earth-europe' },
-                    { id: 'spot', name: '必去景點', icon: 'fa-solid fa-camera' },
-                    { id: 'restaurant', name: '特色美食', icon: 'fa-solid fa-utensils' },
-                    { id: 'shopping', name: '好物購物', icon: 'fa-solid fa-cart-shopping' },
-                    { id: 'winery', name: '微醺酒莊', icon: 'fa-solid fa-wine-bottle' },
-                    { id: 'other', name: '其他推薦', icon: 'fa-solid fa-star' }
+                    { id: 'all', name: '全部', icon: 'fa-solid fa-list' },
+                    { id: 'spot', name: '景點', icon: 'fa-solid fa-camera' },
+                    { id: 'food', name: '餐廳', icon: 'fa-solid fa-utensils' },
+                    { id: 'shop', name: '購物', icon: 'fa-solid fa-bag-shopping' }
                 ];
 
                 const data = ref([
                     // 里斯本
-                    { city: '里斯本（Lisboa）', category: 'spot', name: '里斯本主教座堂 Sé de Lisboa', desc: '里斯本最古老的天主教座堂。 [cite: 2]', map: 'https://maps.app.goo.gl/MLedpdnisQtUsmhE8', keyword: 'cathedral' },
-                    { city: '里斯本（Lisboa）', category: 'spot', name: '太陽門景觀臺 Miradouro das Portas do Sol', desc: '可俯瞰阿爾法瑪區紅瓦屋頂的知名景觀台。 [cite: 4]', map: 'https://maps.app.goo.gl/SL2WCo3htzJBZKMJ8', keyword: 'viewpoint' },
-                    { city: '里斯本（Lisboa）', category: 'spot', name: '奧古斯塔街拱門 Arco Triunfal da Rua August', desc: '象徵 1755 年大地震後重建的標誌性拱門。 [cite: 6]', map: 'https://maps.app.goo.gl/UYiEZN4ZBoxZbZ779', keyword: 'arch' },
-                    { city: '里斯本（Lisboa）', category: 'spot', name: '無花果廣場 Praça da Figueira', desc: '里斯本市中心的熱鬧廣場。 [cite: 8]', map: 'https://maps.app.goo.gl/CdXcBQJ1wkLy54aq7', keyword: 'square' },
-                    { city: '里斯本（Lisboa）', category: 'spot', name: '聖胡斯塔升降機 Elevador de Santa Justa', desc: '新哥德式鐵製垂直升降機。 [cite: 10]', map: 'https://maps.app.goo.gl/eNiWvb2sM8UHBM28A', keyword: 'elevator' },
-                    { city: '里斯本（Lisboa）', category: 'spot', name: 'Livraria Bertrand Chiado', desc: '金氏世界紀錄認證世界最老的書店。 [cite: 13]', map: 'https://maps.app.goo.gl/2YN5iiZrpbjqhK4H6', keyword: 'bookstore' },
-                    { city: '里斯本（Lisboa）', category: 'spot', name: '阿爾坎塔拉聖伯多祿花園 Miradouro de São Pedro de Alcântara', desc: '可飽覽聖若熱城堡與城市全景。 [cite: 15]', map: 'https://maps.app.goo.gl/7dXH5cHa9FbZLvfs8', keyword: 'garden' },
-                    { city: '里斯本（Lisboa）', category: 'spot', name: '聖若熱城堡 Castelo de S. Jorge', desc: '矗立山丘上的古老堡壘。 [cite: 17]', map: 'https://maps.app.goo.gl/nRC14bwVBC4VrAG97', keyword: 'castle' },
-                    { city: '里斯本（Lisboa）', category: 'spot', name: '恩寵觀景台 Miradouro da Graça', desc: '深受當地人喜愛的觀景點。 [cite: 19]', map: 'https://maps.app.goo.gl/AwCNAsJuQ4i61Wxr5', keyword: 'terrace' },
-                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Cervejaria Ramiro', desc: '詹姆士推薦，超好吃蝦料理。 [cite: 25, 27]', map: 'https://maps.app.goo.gl/2ykMivkJaZwg6LpP6', keyword: 'shrimp' },
-                    { city: '里斯本（Lisboa）', category: 'other', name: '巴西人咖啡館 A Brasileira', desc: '歷史悠久的經典咖啡館。 [cite: 28]', map: 'https://maps.app.goo.gl/wUgFjZuK4sc2YLKA8', keyword: 'cafe' },
-                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Maria Catita', desc: '道地的葡萄牙料理餐廳。 [cite: 30, 31]', map: 'https://maps.app.goo.gl/kPwPEqePWKb1EU1C8', keyword: 'portuguese food' },
-                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Uma Marisqueira', desc: '知名海鮮餐廳，提供葡式海鮮燉飯。 [cite: 33, 34]', map: 'https://maps.app.goo.gl/GE9yW2fTNAiNvBCX7', keyword: 'seafood' },
-                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Time Out Market', desc: '集結眾多名店的美食廣場。 [cite: 43]', map: 'https://maps.app.goo.gl/zqWvdYtGXxbNz4MC9', keyword: 'market' },
-                    { city: '里斯本（Lisboa）', category: 'shopping', name: '里斯本罐頭工坊 Conserveira de Lisboa', desc: '傳承百年的復古魚罐頭專賣店。 [cite: 45]', map: 'https://maps.app.goo.gl/KR1jHAaHNwQp5Pzs7', keyword: 'canned fish' },
-                    { city: '里斯本（Lisboa）', category: 'shopping', name: 'Cutipol', desc: '葡萄牙頂級精品餐具。 [cite: 47]', map: 'https://maps.app.goo.gl/B9s4C79Rrp5Qybjr6', keyword: 'cutlery' },
-
+                    { city: '里斯本 (Lisboa)', category: 'spot', name: '里斯本主教座堂 Sé de Lisboa', desc: '里斯本最古老的天主教座堂。', map: 'https://maps.app.goo.gl/MLedpdnisQtUsmhE8', image: 'https://images.unsplash.com/photo-1580325736141-98782f9d519b?auto=format&fit=crop&q=80&w=800' },
+                    { city: '里斯本 (Lisboa)', category: 'spot', name: '太陽門景觀臺 Miradouro das Portas do Sol', desc: '可俯瞰阿爾法瑪區紅瓦屋頂的知名景觀台。', map: 'https://maps.app.goo.gl/SL2WCo3htzJBZKMJ8', image: 'https://images.unsplash.com/photo-1543167123-93d39686008b?auto=format&fit=crop&q=80&w=800' },
+                    { city: '里斯本 (Lisboa)', category: 'spot', name: '奧古斯塔街拱門 Arco Triunfal da Rua August', desc: '象徵 1755 年大地震後重建的標誌性拱門。', map: 'https://maps.app.goo.gl/UYiEZN4ZBoxZbZ779', image: 'https://images.unsplash.com/photo-1558284240-023a887498c0?auto=format&fit=crop&q=80&w=800' },
+                    { city: '里斯本 (Lisboa)', category: 'spot', name: '無花果廣場 Praça da Figueira', desc: '里斯本市中心的熱鬧廣場。', map: 'https://maps.app.goo.gl/CdXcBQJ1wkLy54aq7', image: 'https://images.unsplash.com/photo-1590076212879-8809930799f2?auto=format&fit=crop&q=80&w=800' },
+                    { city: '里斯本 (Lisboa)', category: 'spot', name: '聖胡斯塔升降機 Elevador de Santa Justa', desc: '新哥德式鐵製垂直升降機。', map: 'https://maps.app.goo.gl/eNiWvb2sM8UHBM28A', image: 'https://images.unsplash.com/photo-1512977851705-67ee4bf294f4?auto=format&fit=crop&q=80&w=800' },
+                    { city: '里斯本 (Lisboa)', category: 'spot', name: 'Livraria Bertrand Chiado', desc: '金氏世界紀錄認證世界最老的書店。', map: 'https://maps.app.goo.gl/2YN5iiZrpbjqhK4H6', image: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=800' },
+                    
                     // 貝倫區
-                    { city: '貝倫區 (Belém)', category: 'spot', name: '熱羅尼莫斯修道院 Mosteiro dos Jerónimos', desc: '曼努埃爾式建築傑作，世界文化遺產。 [cite: 50]', map: 'https://maps.app.goo.gl/HUHuJvnLtS3GXrzY8', keyword: 'monastery' },
-                    { city: '貝倫區 (Belém)', category: 'spot', name: '發現者紀念碑 Padrão dos Descobrimentos', desc: '紀念航海時代發現者的宏偉紀念碑。 [cite: 52]', map: 'https://maps.app.goo.gl/wxRGerNAY7RSbh4EA', keyword: 'monument' },
-                    { city: '貝倫區 (Belém)', category: 'spot', name: '貝倫塔 Torre de Belém', desc: '特茹河畔的歷史防禦塔與地標。 [cite: 54]', map: 'https://maps.app.goo.gl/mqKsB9RYcg4opMhW6', keyword: 'tower' },
-                    { city: '貝倫區 (Belém)', category: 'restaurant', name: 'Casa Pastéis de Belém', desc: '葡式蛋塔發源地，必嚐百年老店。 [cite: 56]', map: 'https://maps.app.goo.gl/ZuEhMgGqpvE4ESh57', keyword: 'egg tart' },
+                    { city: '貝倫區 (Belém)', category: 'spot', name: '熱羅尼莫斯修道院 Mosteiro dos Jerónimos', desc: '曼努埃爾式建築傑作，世界文化遺產。', map: 'https://maps.app.goo.gl/HUHuJvnLtS3GXrzY8', image: 'https://images.unsplash.com/photo-1590424744295-971297135e69?auto=format&fit=crop&q=80&w=800' },
+                    { city: '貝倫區 (Belém)', category: 'spot', name: '貝倫塔 Torre de Belém', desc: '特茹河畔的歷史防禦塔與地標。', map: 'https://maps.app.goo.gl/mqKsB9RYcg4opMhW6', image: 'https://images.unsplash.com/photo-1543833077-8f7732a93325?auto=format&fit=crop&q=80&w=800' },
+                    { city: '貝倫區 (Belém)', category: 'food', name: 'Casa Pastéis de Belém', desc: '葡式蛋塔發源地，必嚐百年老店。', map: 'https://maps.app.goo.gl/ZuEhMgGqpvE4ESh57', image: 'https://images.unsplash.com/photo-1590483734724-383b853b237d?auto=format&fit=crop&q=80&w=800' },
 
                     // 波多
-                    { city: '波多（Porto）', category: 'spot', name: '波爾圖主教座堂 Sé do Porto', desc: '波多最古老且宏偉的建築之一。 [cite: 59]', map: 'https://maps.app.goo.gl/DbcoTjv5jWVFfcEG6', keyword: 'porto cathedral' },
-                    { city: '波多（Porto）', category: 'spot', name: '路易一世大橋 Ponte Luís I', desc: '橫跨杜羅河的知名鐵製雙層拱橋。 [cite: 61]', map: 'https://maps.app.goo.gl/UvcJYzQJ88sSqW8t8', keyword: 'bridge' },
-                    { city: '波多（Porto）', category: 'spot', name: '萊羅書店 Livraria Lello', desc: '全球最美書店之一。 [cite: 63]', map: 'https://maps.app.goo.gl/ykeG1KckNBNS27bh7', keyword: 'library' },
-                    { city: '波多（Porto）', category: 'spot', name: '聖本篤車站 São Bento Railway station', desc: '世界最美車站，擁有壯觀壁畫。 [cite: 69, 70]', map: 'https://maps.app.goo.gl/59UpuwZoMWsDMbpD8', keyword: 'station' },
-                    { city: '波多（Porto）', category: 'restaurant', name: 'Majestic Café', desc: '全球十大最美咖啡館之一。 [cite: 74]', map: 'https://maps.app.goo.gl/hBAnZ3HsUHMpQHUV8', keyword: 'luxury cafe' },
-                    { city: '波多（Porto）', category: 'restaurant', name: 'Casa Guedes Tradicional', desc: '傳統風味好吃的豬扒包。 [cite: 76, 77]', map: 'https://maps.app.goo.gl/2k8NFP6kYnRcctY99', keyword: 'pork sandwich' },
-                    { city: '波多（Porto）', category: 'restaurant', name: 'McDonald\'s - Imperial', desc: '號稱全球最美的麥當勞。 [cite: 79, 80]', map: 'https://maps.app.goo.gl/sTz98GRWHjvoz2Sg7', keyword: 'mcdonalds' },
-                    { city: '波多（Porto）', category: 'winery', name: 'Sandeman', desc: '標誌性造型的全球知名波特酒莊。 [cite: 107]', map: 'https://maps.app.goo.gl/8RiCAKHYGvaXSL7r7', keyword: 'wine cellar' },
-                    { city: '波多（Porto）', category: 'winery', name: 'Caves Cálem', desc: '河岸知名酒莊，提供品酒導覽。 [cite: 105]', map: 'https://maps.app.goo.gl/NFCfa7KviMC68tJ96', keyword: 'port wine' }
+                    { city: '波多 (Porto)', category: 'spot', name: '路易一世大橋 Ponte Luís I', desc: '橫跨杜羅河的知名鐵製雙層拱橋。', map: 'https://maps.app.goo.gl/UvcJYzQJ88sSqW8t8', image: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&q=80&w=800' },
+                    { city: '波多 (Porto)', category: 'spot', name: '萊羅書店 Livraria Lello', desc: '全球最美書店之一。', map: 'https://maps.app.goo.gl/ykeG1KckNBNS27bh7', image: 'https://images.unsplash.com/photo-1618219575850-8911634734b4?auto=format&fit=crop&q=80&w=800' },
+                    { city: '波多 (Porto)', category: 'food', name: 'Majestic Café', desc: '全球十大最美咖啡館之一。', map: 'https://maps.app.goo.gl/hBAnZ3HsUHMpQHUV8', image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800' }
                 ]);
 
                 const filteredList = computed(() => {
                     return data.value.filter(item => {
-                        const cityMatch = item.city === currentCity.value;
-                        const categoryMatch = currentCategory.value === 'all' || item.category === currentCategory.value;
-                        return cityMatch && categoryMatch;
+                        return item.city === currentCity.value && (currentCategory.value === 'all' || item.category === currentCategory.value);
                     });
                 });
 
-                const getCategoryName = (id) => {
-                    return categories.find(c => c.id === id)?.name || '推薦';
-                };
-
-                return { currentCity, currentCategory, cities, categories, filteredList, getCategoryName };
+                return { currentCity, currentCategory, cities, categories, filteredList };
             }
         }).mount('#app');
     </script>
