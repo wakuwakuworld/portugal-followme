@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>葡萄牙探索之旅 - 里斯本 & 波多</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* CSS 區塊：自定義樣式與玻璃擬態效果 */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        body {
+            background-color: #f8fafc;
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" v-cloak>
+    <nav class="glass-nav sticky top-0 z-50 p-4 shadow-sm">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <h1 class="text-2xl font-bold text-slate-800">
+                <i class="fa-solid fa-compass text-blue-600 mr-2"></i>葡萄牙跟我走
+            </h1>
+            <div class="flex flex-wrap justify-center gap-2">
+                <button @click="currentCity = '全部'" :class="btnClass(currentCity === '全部')">全區</button>
+                <button @click="currentCity = '里斯本'" :class="btnClass(currentCity === '里斯本')">里斯本</button>
+                <button @click="currentCity = '波多'" :class="btnClass(currentCity === '波多')">波多</button>
+            </div>
+        </div>
+        <div class="max-w-6xl mx-auto mt-4 flex justify-center gap-4 border-t pt-3 border-slate-200">
+            <button v-for="cat in categories" :key="cat" @click="currentCategory = cat" 
+                :class="['px-3 py-1 rounded-full text-sm transition-colors', currentCategory === cat ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">
+                {{ cat }}
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div v-for="(item, index) in filteredList" :key="index" 
+                class="bg-white p-5 rounded-xl shadow-sm border-l-4 card-hover flex flex-col justify-between"
+                :class="categoryColor(item.type)">
+                
+                <div>
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded bg-slate-100 text-slate-500">
+                            {{ item.city }}
+                        </span>
+                        <i :class="[categoryIcon(item.type), 'text-lg']"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">{{ item.name }}</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        {{ item.desc }}
+                    </p>
+                </div>
+
+                <div class="flex items-center justify-between mt-auto pt-4 border-t border-slate-50">
+                    <span class="text-xs text-slate-400">{{ item.type }}</span>
+                    <a v-if="item.map" :href="item.map" target="_blank" 
+                        class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+                        開啟地圖 <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="filteredList.length === 0" class="text-center py-20 text-slate-400">
+            <i class="fa-solid fa-magnifying-glass text-4xl mb-4"></i>
+            <p>找不到相關的內容，請嘗試切換篩選條件。</p>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-8 mt-12">
+        <div class="text-center text-slate-500 text-sm">
+            © 2024 Gemini 旅遊網頁指令 - 完美假期從這裡開始
+        </div>
+    </footer>
+</div>
+
+<script>
+    // Vue 3 JavaScript 邏輯區
+    const { createApp, ref, computed } = Vue;
+
+    createApp({
+        setup() {
+            // 當前城市篩選
+            const currentCity = ref("全部");
+            // 當前類別篩選
+            const currentCategory = ref("全部");
+            // 類別清單
+            const categories = ["全部", "景點", "餐廳", "購物", "酒莊"];
+
+            // 原始資料 Data 區塊
+            const travelData = ref([
+                // 里斯本景點
+                { city: "里斯本", name: "里斯本主教座堂", type: "景點", map: "https://maps.app.goo.gl/MLedpdnisQtUsmhE8", desc: "里斯本最古老的教堂，融合了羅馬式、哥德式與巴洛克建築風格，是這座城市歷史變遷的縮影。" },
+                { city: "里斯本", name: "太陽門景觀臺", type: "景點", map: "https://maps.app.goo.gl/SL2WCo3htzJBZKMJ8", desc: "擁有俯瞰阿爾法瑪區最美的視角，紅瓦屋頂與遠處的隆格斯河交織成一幅絕美的明信片風景。" },
+                { city: "里斯本", name: "奧古斯塔街拱門", type: "景點", map: "https://maps.app.goo.gl/UYiEZN4ZBoxZbZ779", desc: "紀念1755年大地震後重生的地標，莊嚴的凱旋門連結了熱鬧的奧古斯塔街與商業廣場。" },
+                { city: "里斯本", name: "無花果廣場", type: "景點", map: "https://maps.app.goo.gl/CdXcBQJ1wkLy54aq7", desc: "昔日的市中心市集所在地，現在是交通樞紐，也是觀察里斯本日常步調與歷史氣息的最佳場所。" },
+                { city: "里斯本", name: "聖胡斯塔升降機", type: "景點", map: "https://maps.app.goo.gl/eNiWvb2sM8UHBM28A", desc: "這座充滿工業美感的百年升降機，是連接低地與高地卡爾莫廣場的重要交通工具。" },
+                { city: "里斯本", name: "阿爾坎塔拉聖伯多祿花園", type: "景點", map: "https://maps.app.goo.gl/7dXH5cHa9FbZLvfs8", desc: "著名的景觀台花園，特別在黃昏時分，可以遠眺聖若熱城堡與城市天際線的浪漫燈火。" },
+                { city: "里斯本", name: "聖若熱城堡", type: "景點", map: "https://maps.app.goo.gl/nRC14bwVBC4VrAG97", desc: "佇立在里斯本最高處的古堡，擁有堅固的堡壘牆垣，能360度俯瞰整座城市的壯麗景色。" },
+                { city: "里斯本", name: "恩寵觀景台", type: "景點", map: "https://maps.app.goo.gl/AwCNAsJuQ4i61Wxr5", desc: "當地人最喜愛的休閒場所之一，在這裡點杯咖啡，享受里斯本特有的「薩烏達德」懷舊氛圍。" },
+                { city: "里斯本", name: "4月25日大橋", type: "景點", map: "https://maps.app.goo.gl/H9YKDvV7EDwye1yp9", desc: "外型神似舊金山金門大橋，橫跨太加斯河，是里斯本現代化與宏偉工程的重要地標。" },
+                { city: "里斯本", name: "28號黃色路面電車", type: "景點", map: "https://maps.app.goo.gl/FxjEM13NYANKc9ux5", desc: "穿梭在狹窄巷弄與陡峭坡地間的經典電車，是感受里斯本老城區靈魂的最佳移動方式。" },
+                
+                // 里斯本餐廳
+                { city: "里斯本", name: "Cervejaria Ramiro", type: "餐廳", map: "https://maps.app.goo.gl/2ykMivkJaZwg6LpP6", desc: "詹姆士與美食家一致推薦的頂級海鮮餐廳，必點的巨型蝦類與大蒜蝦絕對讓你回味無窮。" },
+                { city: "里斯本", name: "巴西人咖啡館", type: "餐廳", map: "https://maps.app.goo.gl/wUgFjZuK4sc2YLKA8", desc: "這座充滿文學氣息的百年咖啡館，曾是詩人佩索亞的常客之地，品嚐一杯正宗的葡式濃縮。" },
+                { city: "里斯本", name: "Maria Catita", type: "餐廳", map: "https://maps.app.goo.gl/kPwPEqePWKb1EU1C8", desc: "溫馨且具質感的葡萄牙餐廳，提供道地的家常風味，特別是海鮮料理展現了地中海的新鮮。" },
+                { city: "里斯本", name: "Uma Marisqueira", type: "餐廳", map: "https://maps.app.goo.gl/GE9yW2fTNAiNvBCX7", desc: "以葡式海鮮燉飯聞名的傳統餐館，濃郁的湯頭與滿滿的海產，是里斯本必嚐的經典美味。" },
+                { city: "里斯本", name: "A Merendinha do Arco Bandeira", type: "餐廳", map: "https://maps.app.goo.gl/Q5Rz5giXiTjSv2Y27", desc: "隱藏在巷弄中的傳統美味，以簡單且純粹的葡萄牙料理收服在地人與遊客的味蕾。" },
+                { city: "里斯本", name: "Belcanto (米其林)", type: "餐廳", map: "https://maps.app.goo.gl/NkUNQAmq6PUxZ8fG8", desc: "葡萄牙星級名廚 José Avillez 的旗艦餐廳，將傳統食材化為精緻藝術的味覺饗宴。" },
+                { city: "里斯本", name: "Time Out Market", type: "餐廳", map: "https://maps.app.goo.gl/zqWvdYtGXxbNz4MC9", desc: "集結了里斯本各大名店的美食廣場，是能在短時間內一次體驗各種地道美食的最佳去處。" },
+
+                // 購物與其他
+                { city: "里斯本", name: "Livraria Bertrand Chiado", type: "購物", map: "https://maps.app.goo.gl/2YN5iiZrpbjqhK4H6", desc: "獲得金氏世界紀錄認證的「世界最古老書店」，在古老的書香中感受時光的流轉。" },
+                { city: "里斯本", name: "里斯本罐頭工坊", type: "購物", map: "https://maps.app.goo.gl/KR1jHAaHNwQp5Pzs7", desc: "傳承百年的罐頭名店，手工包裝的設計極具設計感，是帶回台灣最完美的旅遊伴手禮。" },
+                { city: "里斯本", name: "Cutipol (Lisboa)", type: "購物", map: "https://maps.app.goo.gl/B9s4C79Rrp5Qybjr6", desc: "葡萄牙國寶級餐具品牌，極簡的人體工學設計，深受全球美食愛好者與精品收藏家喜愛。" },
+
+                // 貝倫區
+                { city: "里斯本", name: "熱羅尼莫斯修道院", type: "景點", map: "https://maps.app.goo.gl/HUHuJvnLtS3GXrzY8", desc: "曼努埃爾式建築的巔峰之作，細緻的石雕記錄了葡萄牙大航海時代的榮光與繁華。" },
+                { city: "里斯本", name: "發現者紀念碑", type: "景點", map: "https://maps.app.goo.gl/wxRGerNAY7RSbh4EA", desc: "屹立於河岸邊，紀念引領葡萄牙走向世界的探險家們，宏偉的船型設計極具震撼力。" },
+                { city: "里斯本", name: "貝倫塔", type: "景點", map: "https://maps.app.goo.gl/mqKsB9RYcg4opMhW6", desc: "大航海時代的防禦堡壘與燈塔，被列為世界遺產，是見證葡萄牙航海史的最美防線。" },
+                { city: "里斯本", name: "Casa Pastéis de Belém", type: "餐廳", map: "https://maps.app.goo.gl/ZuEhMgGqpvE4ESh57", desc: "正宗葡式蛋塔的發源地，酥脆的外皮與濃郁的蛋香，撒上肉桂粉後風味更加迷人。" },
+
+                // 波多
+                { city: "波多", name: "波爾圖主教座堂", type: "景點", map: "https://maps.app.goo.gl/DbcoTjv5jWVFfcEG6", desc: "俯瞰老城區的古老堡壘式教堂，其內部迴廊點綴著精美的青花瓷磚畫，展現強烈在地文化。" },
+                { city: "波多", name: "路易一世大橋", type: "景點", map: "https://maps.app.goo.gl/UvcJYzQJ88sSqW8t8", desc: "波多的象徵，這座雙層鐵橋橫跨杜羅河，是連結波多與對岸酒莊區的重要樞紐。" },
+                { city: "波多", name: "萊羅書店", type: "購物", map: "https://maps.app.goo.gl/ykeG1KckNBNS27bh7", desc: "被譽為世界最美書店，螺旋形的木造樓梯充滿魔幻色彩，傳聞是哈利波特靈感的發源地。" },
+                { city: "波多", name: "阿瑪斯教堂", type: "景點", map: "https://maps.app.goo.gl/wVdP9zzYNq3PiM6c7", desc: "整座建築外牆被鋪滿了藍色瓷磚畫，精緻地敘述著聖徒的故事，是波多最具代表性的美照地點。" },
+                { city: "波多", name: "聖本篤車站", type: "景點", map: "https://maps.app.goo.gl/59UpuwZoMWsDMbpD8", desc: "號稱世界最美車站，大廳內有兩萬塊青花瓷磚，描繪了葡萄牙歷史上的重要戰爭與生活片段。" },
+                { city: "波多", name: "Ribeira 岸邊區", type: "景點", map: "https://maps.app.goo.gl/dPsKEaAUCw69Bxpx5", desc: "波多最熱鬧的河岸風景線，五顏六色的房子與露天餐館，是感受這座城市活力的地方。" },
+                { city: "波多", name: "Majestic Café", type: "餐廳", map: "https://maps.app.goo.gl/hBAnZ3HsUHMpQHUV8", desc: "1920年代風格的高雅咖啡館，金碧輝煌的內裝展現了當年的繁榮與浪漫氣氛。" },
+                { city: "波多", name: "Casa Guedes", type: "餐廳", map: "https://maps.app.goo.gl/2k8NFP6kYnRcctY99", desc: "在地必吃的傳奇豬扒包，以鮮嫩豬肉配上濃郁的起司，簡單卻極度滿足的美味。" },
+                { city: "波多", name: "帝國麥當勞", type: "餐廳", map: "https://maps.app.goo.gl/sTz98GRWHjvoz2Sg7", desc: "全球公認最美麥當勞，前身是帝國咖啡館，內部的彩繪玻璃與吊燈展現奢華古典美。" },
+                { city: "波多", name: "Claus Porto", type: "購物", map: "https://maps.app.goo.gl/PgpmsQNogecXrnmA9", desc: "葡萄牙百年香氛品牌，精緻的包裝與持久的香氣，讓你在沐浴間也能重溫波多的氣息。" },
+                { city: "波多", name: "O Caraças", type: "餐廳", map: "https://maps.app.goo.gl/uiqSvj7zLNsUwha59", desc: "CP值極高的傳統葡式餐館，像是在當地人家中用餐般親切，食物份量十足且美味。" },
+                { city: "波多", name: "Adega São Nicolau", type: "餐廳", map: "https://maps.app.goo.gl/HSiHaQtbCsUCfA5Q9", desc: "這家像酒窖般的餐廳位於河岸巷弄，以經典的燉章魚與鮮魚料理聞名，氣氛絕佳。" },
+                
+                // 波多酒莊
+                { city: "波多", name: "Caves Ferreira", type: "酒莊", map: "https://maps.app.goo.gl/NicYzT43qeWz4E8p9", desc: "擁有深厚歷史底蘊的酒莊，由著名的費雷拉夫人建立，是了解波特酒釀造歷史的首選。" },
+                { city: "波多", name: "Graham's Port Lodge", type: "酒莊", map: "https://maps.app.goo.gl/TA6GgJtcUF9MLFwo8", desc: "位於山丘上的頂級酒莊，除了專業的試酒體驗，從觀景台望向河對岸的景色更是驚豔。" },
+                { city: "波多", name: "Caves Cálem", type: "酒莊", map: "https://maps.app.goo.gl/NFCfa7KviMC68tJ96", desc: "最受歡迎的酒莊之一，提供互動式展覽與精彩的法朵 (Fado) 表演，體驗美酒與音樂的共鳴。" },
+                { city: "波多", name: "Sandeman", type: "酒莊", map: "https://maps.app.goo.gl/8RiCAKHYGvaXSL7r7", desc: "標誌性的黑斗篷神秘人 Logo 令人印象深刻，帶你深入地窖探索這古老品牌的傳承祕密。" }
+            ]);
+
+            // 計算過濾後的資料
+            const filteredList = computed(() => {
+                return travelData.value.filter(item => {
+                    const cityMatch = currentCity.value === '全部' || item.city === currentCity.value;
+                    const catMatch = currentCategory.value === '全部' || item.type === currentCategory.value;
+                    return cityMatch && catMatch;
+                });
+            });
+
+            // 輔助函式：按鈕樣式切換
+            const btnClass = (isActive) => {
+                return isActive 
+                    ? 'px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md transition-all font-bold'
+                    : 'px-6 py-2 bg-white text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition-all';
+            };
+
+            // 輔助函式：根據類別回傳顏色
+            const categoryColor = (type) => {
+                switch(type) {
+                    case '景點': return 'border-red-500';
+                    case '餐廳': return 'border-orange-500';
+                    case '購物': return 'border-blue-500';
+                    case '酒莊': return 'border-purple-500';
+                    default: return 'border-slate-500';
+                }
+            };
+
+            // 輔助函式：根據類別回傳圖示
+            const categoryIcon = (type) => {
+                switch(type) {
+                    case '景點': return 'fa-solid fa-camera-retro text-red-500';
+                    case '餐廳': return 'fa-solid fa-utensils text-orange-500';
+                    case '購物': return 'fa-solid fa-bag-shopping text-blue-500';
+                    case '酒莊': return 'fa-solid fa-wine-glass text-purple-500';
+                    default: return 'fa-solid fa-location-dot';
+                }
+            };
+
+            return {
+                currentCity, currentCategory, categories, travelData, filteredList,
+                btnClass, categoryColor, categoryIcon
+            };
+        }
+    }).mount('#app');
+</script>
+
+</body>
+</html>
