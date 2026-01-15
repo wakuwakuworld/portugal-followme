@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>葡萄牙旅遊指南 | 里斯本 & 波多</title>
+    <title>葡萄牙跟我走 | 里斯本 & 貝倫 & 波多</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&display=swap');
         body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
-        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 1.5rem !important; }
-        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
-        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .card-hover:hover { transform: translateY(-8px); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
         .img-overlay { background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.6) 100%); }
     </style>
 </head>
@@ -22,7 +21,7 @@
             <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-map-location-dot text-indigo-600 text-2xl"></i>
-                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">葡萄牙跟我走</h1>
+                    <h1 class="text-2xl font-black text-indigo-900 tracking-tight">葡萄牙跟我走</h1>
                 </div>
                 <div class="flex flex-wrap justify-center gap-2">
                     <button v-for="city in cities" :key="city" @click="currentCity = city; currentCategory = 'all'" 
@@ -42,7 +41,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div v-for="item in filteredList" :key="item.name" class="card-hover bg-white overflow-hidden flex flex-col border border-gray-100 shadow-sm">
+                <div v-for="item in filteredList" :key="item.name" class="card-hover bg-white rounded-3xl overflow-hidden flex flex-col border border-gray-100 shadow-sm">
                     <div class="relative h-64">
                         <img :src="item.img" :alt="item.name" class="w-full h-full object-cover">
                         <div class="absolute inset-0 img-overlay"></div>
@@ -68,13 +67,13 @@
 
             <div v-if="filteredList.length === 0" class="text-center py-32 text-slate-300">
                 <i class="fa-solid fa-map text-5xl mb-4"></i>
-                <p class="text-lg font-bold">目前這個分類還沒有內容唷！</p>
+                <p class="text-lg font-bold">此區域目前沒有相關內容</p>
             </div>
         </main>
 
         <footer class="text-center py-12 text-slate-400 text-sm border-t border-gray-100 mt-10">
             <p class="font-black tracking-widest text-slate-500 mb-1">PORTUGAL TRAVEL GUIDE 2026</p>
-            <p>完美假期從這裡開始</p>
+            <p>專業旅遊規劃師與前端設計師 聯合製作</p>
         </footer>
     </div>
 
@@ -97,34 +96,38 @@
                 ];
 
                 const data = ref([
-                    // 里斯本 (Lisboa) [cite: 1]
+                    // 里斯本 (Lisboa)
                     { city: '里斯本（Lisboa）', category: 'spot', name: '里斯本主教座堂 Sé de Lisboa', desc: '里斯本最古老的天主教座堂。', map: 'https://maps.app.goo.gl/MLedpdnisQtUsmhE8', img: 'https://images.unsplash.com/photo-1580325736141-98782f9d519b?auto=format&fit=crop&w=800' },
                     { city: '里斯本（Lisboa）', category: 'spot', name: '太陽門景觀臺 Miradouro das Portas do Sol', desc: '可俯瞰阿爾法瑪區紅瓦屋頂的知名景觀台。', map: 'https://maps.app.goo.gl/SL2WCo3htzJBZKMJ8', img: 'https://images.unsplash.com/photo-1543167123-93d39686008b?auto=format&fit=crop&w=800' },
                     { city: '里斯本（Lisboa）', category: 'spot', name: '奧古斯塔街拱門 Arco Triunfal da Rua Augusta', desc: '象徵 1755 年大地震後重建的標誌性拱門。', map: 'https://maps.app.goo.gl/UYiEZN4ZBoxZbZ779', img: 'https://images.unsplash.com/photo-1558284240-023a887498c0?auto=format&fit=crop&w=800' },
                     { city: '里斯本（Lisboa）', category: 'spot', name: '無花果廣場 Praça da Figueira', desc: '里斯本市中心的熱鬧廣場。', map: 'https://maps.app.goo.gl/CdXcBQJ1wkLy54aq7', img: 'https://images.unsplash.com/photo-1590076212879-8809930799f2?auto=format&fit=crop&w=800' },
-                    { city: '里斯本（Lisboa）', category: 'spot', name: '聖胡斯塔升降機 Elevador de Santa Justa', desc: '新哥德式鐵製垂直升降機。', map: 'https://maps.app.goo.gl/eNiWvb2sM8UHBM28A', img: 'https://images.unsplash.com/photo-1512977851705-67ee4bf294f4?auto=format&fit=crop&w=800' },
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '聖胡斯塔升降機 Elevador de Santa Justa', desc: '新哥德式鐵製垂直升降機，連接下城與卡爾莫廣場。', map: 'https://maps.app.goo.gl/eNiWvb2sM8UHBM28A', img: 'https://images.unsplash.com/photo-1512977851705-67ee4bf294f4?auto=format&fit=crop&w=800' },
                     { city: '里斯本（Lisboa）', category: 'spot', name: 'Livraria Bertrand Chiado', desc: '金氏世界紀錄認證世界最老的書店。', map: 'https://maps.app.goo.gl/2YN5iiZrpbjqhK4H6', img: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=800' },
-                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Restaurant - Cervejaria Ramiro', desc: '詹姆士推薦，超好吃蝦料理。', map: 'https://maps.app.goo.gl/2ykMivkJaZwg6LpP6', img: 'https://images.unsplash.com/photo-1551300537-c3973703151b?auto=format&fit=crop&w=800' },
-                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Time Out Market', desc: '集結眾多名店的美食廣場。', map: 'https://maps.app.goo.gl/zqWvdYtGXxbNz4MC9', img: 'https://images.unsplash.com/photo-1555396569-d6d8c3dd097e?auto=format&fit=crop&w=800' },
-                    { city: '里斯本（Lisboa）', category: 'shopping', name: '里斯本罐頭工坊 Conserveira de Lisboa', desc: '傳承百年的復古魚罐頭專賣店。', map: 'https://maps.app.goo.gl/KR1jHAaHNwQp5Pzs7', img: 'https://images.unsplash.com/photo-1597405364841-8608c0274191?auto=format&fit=crop&w=800' },
-                    { city: '里斯本（Lisboa）', category: 'shopping', name: 'Cutipol (Lisboa)', desc: '葡萄牙頂級精品餐具。', map: 'https://maps.app.goo.gl/B9s4C79Rrp5Qybjr6', img: 'https://images.unsplash.com/photo-1584260021319-7988390b3b4d?auto=format&fit=crop&w=800' },
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '阿爾坎塔拉聖伯多祿花園', desc: '俯瞰里斯本市中心與聖若熱城堡的著名花園。', map: 'https://maps.app.goo.gl/7dXH5cHa9FbZLvfs8', img: 'https://images.unsplash.com/photo-1551300537-c3973703151b?auto=format&fit=crop&w=800' },
+                    { city: '里斯本（Lisboa）', category: 'spot', name: '聖若熱城堡 Castelo de S. Jorge', desc: '矗立山丘上的古老堡壘，俯視全城景色。', map: 'https://maps.app.goo.gl/nRC14bwVBC4VrAG97', img: 'https://images.unsplash.com/photo-1590424744295-971297135e69?auto=format&fit=crop&w=800' },
+                    { city: '里斯本（Lisboa）', category: 'other', name: '4月25日大橋 Ponte 25 de Abril', desc: '橫跨特茹河的紅色懸索大橋，外觀酷似金門大橋。', map: 'https://maps.app.goo.gl/H9YKDvV7EDwye1yp9', img: 'https://images.unsplash.com/photo-1561033405-b7787f0b2a75?auto=format&fit=crop&w=800' },
+                    { city: '里斯本（Lisboa）', category: 'other', name: '28路電車 Tram 28', desc: '經典的黃色復古電車，穿梭古老街巷。', map: 'https://maps.app.goo.gl/FxjEM13NYANKc9ux5', img: 'https://images.unsplash.com/photo-1541530538-3015a5105828?auto=format&fit=crop&w=800' },
+                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Cervejaria Ramiro', desc: '詹姆士推薦的高人氣海鮮餐廳，蝦料理必點。', map: 'https://maps.app.goo.gl/2ykMivkJaZwg6LpP6', img: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800' },
+                    { city: '里斯本（Lisboa）', category: 'restaurant', name: 'Time Out Market', desc: '集結眾多里斯本知名攤位的大型美食廣場。', map: 'https://maps.app.goo.gl/zqWvdYtGXxbNz4MC9', img: 'https://images.unsplash.com/photo-1555396569-d6d8c3dd097e?auto=format&fit=crop&w=800' },
+                    { city: '里斯本（Lisboa）', category: 'shopping', name: '里斯本罐頭工坊 Conserveira de Lisboa', desc: '傳承百年的復古魚罐頭專賣店，熱門伴手禮。', map: 'https://maps.app.goo.gl/KR1jHAaHNwQp5Pzs7', img: 'https://images.unsplash.com/photo-1597405364841-8608c0274191?auto=format&fit=crop&w=800' },
+                    { city: '里斯本（Lisboa）', category: 'shopping', name: 'Cutipol', desc: '葡萄牙頂級精品餐具，設計優雅現代。', map: 'https://maps.app.goo.gl/B9s4C79Rrp5Qybjr6', img: 'https://images.unsplash.com/photo-1523363321556-9a572a74c7e2?auto=format&fit=crop&w=800' },
 
-                    // 貝倫區 (Belém) [cite: 49]
-                    { city: '貝倫區 (Belém)', category: 'spot', name: '熱羅尼莫斯修道院 Mosteiro dos Jerónimos', desc: '曼努埃爾式建築傑作，世界文化遺產。', map: 'https://maps.app.goo.gl/HUHuJvnLtS3GXrzY8', img: 'https://images.unsplash.com/photo-1590424744295-971297135e69?auto=format&fit=crop&w=800' },
-                    { city: '貝倫區 (Belém)', category: 'spot', name: '發現者紀念碑 Padrão dos Descobrimentos', desc: '紀念航海時代發現者的宏偉紀念碑。', map: 'https://maps.app.goo.gl/wxRGerNAY7RSbh4EA', img: 'https://images.unsplash.com/photo-1591464319403-90d575003504?auto=format&fit=crop&w=800' },
-                    { city: '貝倫區 (Belém)', category: 'spot', name: '貝倫塔 Torre de Belém', desc: '特茹河畔的歷史防禦塔與地標。', map: 'https://maps.app.goo.gl/mqKsB9RYcg4opMhW6', img: 'https://images.unsplash.com/photo-1543833077-8f7732a93325?auto=format&fit=crop&w=800' },
-                    { city: '貝倫區 (Belém)', category: 'restaurant', name: 'Casa Pastéis de Belém', desc: '葡式蛋塔的發源地，必嚐百年老店。', map: 'https://maps.app.goo.gl/ZuEhMgGqpvE4ESh57', img: 'https://images.unsplash.com/photo-1590483734724-383b853b237d?auto=format&fit=crop&w=800' },
+                    // 貝倫區 (Belém)
+                    { city: '貝倫區 (Belém)', category: 'spot', name: '熱羅尼莫斯修道院 Jerónimos', desc: '曼努埃爾式建築傑作，葡萄牙航海時代的象徵。', map: 'https://maps.app.goo.gl/HUHuJvnLtS3GXrzY8', img: 'https://images.unsplash.com/photo-1590424744295-971297135e69?auto=format&fit=crop&w=800' },
+                    { city: '貝倫區 (Belém)', category: 'spot', name: '發現者紀念碑 Padrão Descobrimentos', desc: '紀念航海時代英雄們的大型宏偉紀念碑。', map: 'https://maps.app.goo.gl/wxRGerNAY7RSbh4EA', img: 'https://images.unsplash.com/photo-1591464319403-90d575003504?auto=format&fit=crop&w=800' },
+                    { city: '貝倫區 (Belém)', category: 'spot', name: '貝倫塔 Torre de Belém', desc: '屹立河畔的防禦要塞，里斯本最著名的地標。', map: 'https://maps.app.goo.gl/mqKsB9RYcg4opMhW6', img: 'https://images.unsplash.com/photo-1543833077-8f7732a93325?auto=format&fit=crop&w=800' },
+                    { city: '貝倫區 (Belém)', category: 'restaurant', name: 'Casa Pastéis de Belém', desc: '葡式蛋塔發源地，創立於1837年的正宗老店。', map: 'https://maps.app.goo.gl/ZuEhMgGqpvE4ESh57', img: 'https://images.unsplash.com/photo-1590483734724-383b853b237d?auto=format&fit=crop&w=800' },
 
-                    // 波多 (Porto) [cite: 58]
-                    { city: '波多（Porto）', category: 'spot', name: '路易一世大橋 Ponte Luís I', desc: '橫跨杜羅河的知名鐵製雙層拱橋。', map: 'https://maps.app.goo.gl/UvcJYzQJ88sSqW8t8', img: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=800' },
-                    { city: '波多（Porto）', category: 'spot', name: '萊羅書店 Livraria Lello', desc: '全球最美書店之一，內部裝潢華麗。', map: 'https://maps.app.goo.gl/ykeG1KckNBNS27bh7', img: 'https://images.unsplash.com/photo-1618219575850-8911634734b4?auto=format&fit=crop&w=800' },
-                    { city: '波多（Porto）', category: 'spot', name: '聖本篤車站 São Bento Railway station', desc: '世界最美火車站，擁有壯觀壁畫。', map: 'https://maps.app.goo.gl/59UpuwZoMWsDMbpD8', img: 'https://images.unsplash.com/photo-1515230248450-ef307a6198f1?auto=format&fit=crop&w=800' },
-                    { city: '波多（Porto）', category: 'restaurant', name: 'Majestic Café', desc: '全球十大最美咖啡館之一。', map: 'https://maps.app.goo.gl/hBAnZ3HsUHMpQHUV8', img: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800' },
-                    { city: '波多（Porto）', category: 'winery', name: 'Caves Ferreira', desc: '歷史悠久的波特酒莊。', map: 'https://maps.app.goo.gl/NicYzT43qeWz4E8p9', img: 'https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?auto=format&fit=crop&w=800' },
-                    { city: '波多（Porto）', category: 'winery', name: 'Casa Ferreirinha', desc: '優質波特酒與葡萄酒莊。', map: 'https://maps.app.goo.gl/V252wDcWCMfsYyHy5', img: 'https://images.unsplash.com/photo-1553123292-1254378170e5?auto=format&fit=crop&w=800' },
-                    { city: '波多（Porto）', category: 'winery', name: '格雷厄姆 Graham\'s Port Lodge', desc: '知名波特酒莊，提供品酒體驗。', map: 'https://maps.app.goo.gl/TA6GgJtcUF9MLFwo8', img: 'https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?auto=format&fit=crop&w=800' },
-                    { city: '波多（Porto）', category: 'winery', name: 'Caves Cálem', desc: '河岸知名酒莊，常有 Fado 表演。', map: 'https://maps.app.goo.gl/NFCfa7KviMC68tJ96', img: 'https://images.unsplash.com/photo-1584916301299-a86850d9972c?auto=format&fit=crop&w=800' },
-                    { city: '波多（Porto）', category: 'winery', name: 'Sandeman', desc: '標誌性造型的全球知名波特酒莊。', map: 'https://maps.app.goo.gl/8RiCAKHYGvaXSL7r7', img: 'https://images.unsplash.com/photo-1528823331199-35d600c87439?auto=format&fit=crop&w=800' }
+                    // 波多 (Porto)
+                    { city: '波多（Porto）', category: 'spot', name: '路易一世大橋 Ponte Luís I', desc: '橫跨杜羅河的知名鐵製雙層拱橋，波多的標誌。', map: 'https://maps.app.goo.gl/UvcJYzQJ88sSqW8t8', img: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?auto=format&fit=crop&w=800' },
+                    { city: '波多（Porto）', category: 'spot', name: '萊羅書店 Livraria Lello', desc: '全球最美書店之一，內部的木頭旋轉樓梯非常有名。', map: 'https://maps.app.goo.gl/ykeG1KckNBNS27bh7', img: 'https://images.unsplash.com/photo-1618219575850-8911634734b4?auto=format&fit=crop&w=800' },
+                    { city: '波多（Porto）', category: 'spot', name: '聖本篤車站 São Bento Station', desc: '以壯麗藍白瓷磚壁畫聞名世界的最美火車站。', map: 'https://maps.app.goo.gl/59UpuwZoMWsDMbpD8', img: 'https://images.unsplash.com/photo-1515230248450-ef307a6198f1?auto=format&fit=crop&w=800' },
+                    { city: '波多（Porto）', category: 'restaurant', name: 'Majestic Café', desc: '全球十大最美咖啡館之一，充滿1920年代古典風情。', map: 'https://maps.app.goo.gl/hBAnZ3HsUHMpQHUV8', img: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800' },
+                    { city: '波多（Porto）', category: 'winery', name: 'Caves Ferreira', desc: '具有悠久歷史的葡萄牙本土老牌波特酒莊。', map: 'https://maps.app.goo.gl/NicYzT43qeWz4E8p9', img: 'https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?auto=format&fit=crop&w=800' },
+                    { city: '波多（Porto）', category: 'winery', name: 'Casa Ferreirinha', desc: '以生產頂級波特酒與葡萄酒聞名的在地名廠。', map: 'https://maps.app.goo.gl/V252wDcWCMfsYyHy5', img: 'https://images.unsplash.com/photo-1553123292-1254378170e5?auto=format&fit=crop&w=800' },
+                    { city: '波多（Porto）', category: 'winery', name: 'Graham\'s Port Lodge', desc: '視野極佳的高級酒莊，提供專業品酒與導覽。', map: 'https://maps.app.goo.gl/TA6GgJtcUF9MLFwo8', img: 'https://images.unsplash.com/photo-1568213816046-0ee1c42bd559?auto=format&fit=crop&w=800' },
+                    { city: '波多（Porto）', category: 'winery', name: 'Caves Cálem', desc: '河岸知名酒莊，常與葡萄牙法朵音樂表演結合。', map: 'https://maps.app.goo.gl/NFCfa7KviMC68tJ96', img: 'https://images.unsplash.com/photo-1584916301299-a86850d9972c?auto=format&fit=crop&w=800' },
+                    { city: '波多（Porto）', category: 'winery', name: 'Sandeman', desc: '以神秘黑色斗篷形象聞名的全球頂尖波特酒莊。', map: 'https://maps.app.goo.gl/8RiCAKHYGvaXSL7r7', img: 'https://images.unsplash.com/photo-1528823331199-35d600c87439?auto=format&fit=crop&w=800' }
                 ]);
 
                 const filteredList = computed(() => {
