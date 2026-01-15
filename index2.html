@@ -94,11 +94,11 @@
 
         createApp({
             setup() {
-                // 狀態：預設改為 '全區'
+                // 狀態：預設 '全區'
                 const currentCity = ref("全區");
                 const currentCategory = ref("all");
 
-                // 資料定義：加入 '全區' 選項
+                // 資料定義
                 const cities = ["全區", "里斯本（Lisboa）", "貝倫區 (Belém)", "波多（Porto）"];
                 const categories = [
                     { id: "all", name: "全部", icon: "fa-solid fa-layer-group" },
@@ -109,64 +109,65 @@
                     { id: "other", name: "其他", icon: "fa-solid fa-note-sticky" }
                 ];
 
-                // 旅遊資料
+                // 旅遊資料 (內容已擴充)
                 const data = ref([
-                    // --- 里斯本 ---
-                    { city: "里斯本（Lisboa）", category: "spot", name: "里斯本主教座堂 Sé de Lisboa", desc: "里斯本最古老的天主教座堂。", map: "https://maps.app.goo.gl/MLedpdnisQtUsmhE8" },
-                    { city: "里斯本（Lisboa）", category: "spot", name: "太陽門景觀臺 Miradouro das Portas do Sol", desc: "可俯瞰阿爾法瑪區紅瓦屋頂的知名景觀台。", map: "https://maps.app.goo.gl/SL2WCo3htzJBZKMJ8" },
-                    { city: "里斯本（Lisboa）", category: "spot", name: "奧古斯塔街拱門 Arco Triunfal", desc: "象徵 1755 年大地震後重建的標誌性拱門。", map: "https://maps.app.goo.gl/UYiEZN4ZBoxZbZ779" },
-                    { city: "里斯本（Lisboa）", category: "spot", name: "無花果廣場 Praça da Figueira", desc: "里斯本市中心的熱鬧廣場。", map: "https://maps.app.goo.gl/CdXcBQJ1wkLy54aq7" },
-                    { city: "里斯本（Lisboa）", category: "spot", name: "聖胡斯塔升降機 Santa Justa", desc: "新哥德式鐵製垂直升降機。", map: "https://maps.app.goo.gl/eNiWvb2sM8UHBM28A" },
-                    { city: "里斯本（Lisboa）", category: "spot", name: "Livraria Bertrand Chiado", desc: "金氏世界紀錄認證世界最老的書店。", map: "https://maps.app.goo.gl/2YN5iiZrpbjqhK4H6" },
-                    { city: "里斯本（Lisboa）", category: "spot", name: "阿爾坎塔拉聖伯多祿花園", desc: "俯瞰里斯本市中心與聖若熱城堡的著名花園。", map: "https://maps.app.goo.gl/7dXH5cHa9FbZLvfs8" },
-                    { city: "里斯本（Lisboa）", category: "spot", name: "聖若熱城堡 Castelo de S. Jorge", desc: "矗立山丘上的古老堡壘。", map: "https://maps.app.goo.gl/nRC14bwVBC4VrAG97" },
-                    { city: "里斯本（Lisboa）", category: "spot", name: "恩寵觀景台 Miradouro da Graça", desc: "當地人最愛的觀景點之一。", map: "https://maps.app.goo.gl/AwCNAsJuQ4i61Wxr5" },
-                    { city: "里斯本（Lisboa）", category: "other", name: "4月25日大橋 Ponte 25 de Abril", desc: "橫跨特茹河的紅色懸索大橋。", map: "https://maps.app.goo.gl/H9YKDvV7EDwye1yp9" },
-                    { city: "里斯本（Lisboa）", category: "other", name: "28路電車 Tram 28", desc: "經典的黃色復古電車。", map: "https://maps.app.goo.gl/FxjEM13NYANKc9ux5" },
-                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Cervejaria Ramiro", desc: "詹姆士推薦，超好吃蝦料理。", map: "https://maps.app.goo.gl/2ykMivkJaZwg6LpP6" },
-                    { city: "里斯本（Lisboa）", category: "other", name: "巴西人咖啡館 A Brasileira", desc: "歷史悠久的經典咖啡館。", map: "https://maps.app.goo.gl/wUgFjZuK4sc2YLKA8" },
-                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Maria Catita", desc: "道地的葡萄牙料理餐廳。", map: "https://maps.app.goo.gl/kPwPEqePWKb1EU1C8" },
-                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Uma Marisqueira", desc: "知名海鮮餐廳，提供葡式海鮮燉飯。", map: "https://maps.app.goo.gl/GE9yW2fTNAiNvBCX7" },
-                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Mini Bar - José Avillez", desc: "創意精緻料理餐酒館。", map: "https://maps.app.goo.gl/33vkxnssxAsYjneSA" },
-                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Belcanto", desc: "知名的高級葡萄牙餐廳。", map: "https://maps.app.goo.gl/NkUNQAmq6PUxZ8fG8" },
-                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Time Out Market", desc: "集結眾多名店的美食廣場。", map: "https://maps.app.goo.gl/zqWvdYtGXxbNz4MC9" },
-                    { city: "里斯本（Lisboa）", category: "shopping", name: "里斯本罐頭工坊 Conserveira", desc: "傳承百年的復古魚罐頭專賣店。", map: "https://maps.app.goo.gl/KR1jHAaHNwQp5Pzs7" },
-                    { city: "里斯本（Lisboa）", category: "shopping", name: "Cutipol", desc: "葡萄牙頂級精品餐具。", map: "https://maps.app.goo.gl/B9s4C79Rrp5Qybjr6" },
+                    // --- 里斯本 (21個) ---
+                    { city: "里斯本（Lisboa）", category: "spot", name: "里斯本主教座堂 Sé de Lisboa", desc: "建於1147年，歷經多次地震重修，融合羅馬式與哥德式風格，是里斯本最古老的教堂。", map: "https://maps.app.goo.gl/MLedpdnisQtUsmhE8" },
+                    { city: "里斯本（Lisboa）", category: "spot", name: "太陽門景觀臺 Miradouro das Portas do Sol", desc: "阿爾法瑪區的最佳觀景點，能將紅瓦白牆的舊城區與特茹河美景盡收眼底。", map: "https://maps.app.goo.gl/SL2WCo3htzJBZKMJ8" },
+                    { city: "里斯本（Lisboa）", category: "spot", name: "奧古斯塔街拱門 Arco Triunfal", desc: "氣勢磅礴的凱旋門，登上頂部可360度俯瞰商業廣場與奧古斯塔街的繁華街景。", map: "https://maps.app.goo.gl/UYiEZN4ZBoxZbZ779" },
+                    { city: "里斯本（Lisboa）", category: "spot", name: "無花果廣場 Praça da Figueira", desc: "交通繁忙的熱鬧廣場，周邊商店林立，是感受里斯本日常脈動與品嘗小吃的絕佳據點。", map: "https://maps.app.goo.gl/CdXcBQJ1wkLy54aq7" },
+                    { city: "里斯本（Lisboa）", category: "spot", name: "聖胡斯塔升降機 Santa Justa", desc: "1902年完工的百年歷史電梯，新哥德式鋼鐵結構，是連結上下城的交通古蹟，視野絕佳。", map: "https://maps.app.goo.gl/eNiWvb2sM8UHBM28A" },
+                    { city: "里斯本（Lisboa）", category: "spot", name: "Livraria Bertrand Chiado", desc: "1732年開業，金氏世界紀錄認證「現存最古老的書店」，充滿濃厚的歷史書香氣息。", map: "https://maps.app.goo.gl/2YN5iiZrpbjqhK4H6" },
+                    { city: "里斯本（Lisboa）", category: "spot", name: "阿爾坎塔拉聖伯多祿花園", desc: "位於上城的浪漫花園，可隔著山谷眺望聖若熱城堡，夜景更是璀璨迷人。", map: "https://maps.app.goo.gl/7dXH5cHa9FbZLvfs8" },
+                    { city: "里斯本（Lisboa）", category: "spot", name: "聖若熱城堡 Castelo de S. Jorge", desc: "盤踞山丘的千年堡壘，曾是皇室居所，擁有俯瞰里斯本全市與特茹河的無敵視野。", map: "https://maps.app.goo.gl/nRC14bwVBC4VrAG97" },
+                    { city: "里斯本（Lisboa）", category: "spot", name: "恩寵觀景台 Miradouro da Graça", desc: "當地人鍾愛的觀景台，適合點杯咖啡，在松樹蔭下悠閒欣賞夕陽染紅城市的瞬間。", map: "https://maps.app.goo.gl/AwCNAsJuQ4i61Wxr5" },
+                    { city: "里斯本（Lisboa）", category: "other", name: "4月25日大橋 Ponte 25 de Abril", desc: "橫跨特茹河的紅色懸索橋，外型酷似金門大橋，是紀念葡萄牙民主革命的重要地標。", map: "https://maps.app.goo.gl/H9YKDvV7EDwye1yp9" },
+                    { city: "里斯本（Lisboa）", category: "other", name: "28路電車 Tram 28", desc: "傳奇的黃色木製電車，穿梭在狹窄陡峭的舊城巷弄間，是體驗里斯本風情的必搭路線。", map: "https://maps.app.goo.gl/FxjEM13NYANKc9ux5" },
+                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Cervejaria Ramiro", desc: "詹姆士大推的人氣名店，海鮮鮮甜肥美，蒜油蝦與螃蟹更是老饕必點的美味。", map: "https://maps.app.goo.gl/2ykMivkJaZwg6LpP6" },
+                    { city: "里斯本（Lisboa）", category: "other", name: "巴西人咖啡館 A Brasileira", desc: "百年歷史的經典咖啡館，門口有詩人佩索阿銅像，內部裝潢華麗，是文人雅士聚集地。", map: "https://maps.app.goo.gl/wUgFjZuK4sc2YLKA8" },
+                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Maria Catita", desc: "裝潢溫馨且充滿葡式風情，提供章魚、鱈魚等道地傳統料理，口味細緻受好評。", map: "https://maps.app.goo.gl/kPwPEqePWKb1EU1C8" },
+                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Uma Marisqueira", desc: "在地人激推的海鮮老店，招牌葡式海鮮燉飯料多味美，湯頭濃郁令人回味無窮。", map: "https://maps.app.goo.gl/GE9yW2fTNAiNvBCX7" },
+                    { city: "里斯本（Lisboa）", category: "restaurant", name: "A Merendinha do Arco Bandeira", desc: "隱身拱門旁的平價小館，提供烤魚、燉肉等家常菜，是體驗在地生活的好去處。", map: "https://maps.app.goo.gl/Q5Rz5giXiTjSv2Y27" },
+                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Mini Bar - José Avillez", desc: "名廚 José Avillez 打造的餐酒館，將傳統料理轉化為創意驚喜，味覺與視覺雙重享受。", map: "https://maps.app.goo.gl/33vkxnssxAsYjneSA" },
+                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Belcanto", desc: "米其林二星殊榮，以當代手法重新詮釋葡萄牙經典菜色，提供頂級精緻的用餐體驗。", map: "https://maps.app.goo.gl/NkUNQAmq6PUxZ8fG8" },
+                    { city: "里斯本（Lisboa）", category: "restaurant", name: "Time Out Market", desc: "匯集全城頂尖名廚與人氣餐廳的美食殿堂，從海鮮到甜點應有盡有，絕不踩雷。", map: "https://maps.app.goo.gl/zqWvdYtGXxbNz4MC9" },
+                    { city: "里斯本（Lisboa）", category: "shopping", name: "里斯本罐頭工坊 Conserveira", desc: "創立於1930年的老字號，色彩繽紛的復古包裝魚罐頭，是送禮自用兩相宜的伴手禮。", map: "https://maps.app.goo.gl/KR1jHAaHNwQp5Pzs7" },
+                    { city: "里斯本（Lisboa）", category: "shopping", name: "Cutipol", desc: "葡萄牙國寶級餐具品牌，線條優雅極簡，手工打造的質感讓餐桌風景瞬間升級。", map: "https://maps.app.goo.gl/B9s4C79Rrp5Qybjr6" },
 
-                    // --- 貝倫區 ---
-                    { city: "貝倫區 (Belém)", category: "spot", name: "熱羅尼莫斯修道院 Jerónimos", desc: "曼努埃爾式建築傑作，世界文化遺產。", map: "https://maps.app.goo.gl/HUHuJvnLtS3GXrzY8" },
-                    { city: "貝倫區 (Belém)", category: "spot", name: "發現者紀念碑 Descobrimentos", desc: "紀念航海時代發現者的宏偉紀念碑。", map: "https://maps.app.goo.gl/wxRGerNAY7RSbh4EA" },
-                    { city: "貝倫區 (Belém)", category: "spot", name: "貝倫塔 Torre de Belém", desc: "特茹河畔的歷史防禦塔與地標。", map: "https://maps.app.goo.gl/mqKsB9RYcg4opMhW6" },
-                    { city: "貝倫區 (Belém)", category: "restaurant", name: "Casa Pastéis de Belém", desc: "葡式蛋塔的發源地，必嚐百年老店。", map: "https://maps.app.goo.gl/ZuEhMgGqpvE4ESh57" },
+                    // --- 貝倫區 (4個) ---
+                    { city: "貝倫區 (Belém)", category: "spot", name: "熱羅尼莫斯修道院 Jerónimos", desc: "曼努埃爾式建築的巔峰之作，雕刻繁複精美，見證了葡萄牙大航海時代的輝煌。", map: "https://maps.app.goo.gl/HUHuJvnLtS3GXrzY8" },
+                    { city: "貝倫區 (Belém)", category: "spot", name: "發現者紀念碑 Descobrimentos", desc: "帆船造型的巨大紀念碑，刻有恩里克王子等航海英雄，象徵葡萄牙勇於探索的精神。", map: "https://maps.app.goo.gl/wxRGerNAY7RSbh4EA" },
+                    { city: "貝倫區 (Belém)", category: "spot", name: "貝倫塔 Torre de Belém", desc: "矗立河畔的防禦堡壘，融合摩爾與曼努埃爾風格，是葡萄牙著名的世界文化遺產。", map: "https://maps.app.goo.gl/mqKsB9RYcg4opMhW6" },
+                    { city: "貝倫區 (Belém)", category: "restaurant", name: "Casa Pastéis de Belém", desc: "葡式蛋塔的發源地，自1837年飄香至今，酥脆塔皮配上濃郁內餡，排隊也值得。", map: "https://maps.app.goo.gl/ZuEhMgGqpvE4ESh57" },
 
-                    // --- 波多 ---
-                    { city: "波多（Porto）", category: "spot", name: "波爾圖主教座堂 Sé do Porto", desc: "波多最古老且宏偉的建築之一。", map: "https://maps.app.goo.gl/DbcoTjv5jWVFfcEG6" },
-                    { city: "波多（Porto）", category: "spot", name: "路易一世大橋 Ponte Luís I", desc: "橫跨杜羅河的知名鐵製雙層拱橋。", map: "https://maps.app.goo.gl/UvcJYzQJ88sSqW8t8" },
-                    { city: "波多（Porto）", category: "spot", name: "萊羅書店 Livraria Lello", desc: "全球最美書店之一。", map: "https://maps.app.goo.gl/ykeG1KckNBNS27bh7" },
-                    { city: "波多（Porto）", category: "shopping", name: "Mercado do Bolhão", desc: "最具代表性的在地傳統市場。", map: "https://maps.app.goo.gl/S2iApZ2BF6n4Y7JN7" },
-                    { city: "波多（Porto）", category: "spot", name: "阿瑪斯教堂 Capela das Almas", desc: "外牆覆蓋絕美藍色瓷磚。", map: "https://maps.app.goo.gl/wVdP9zzYNq3PiM6c7" },
-                    { city: "波多（Porto）", category: "spot", name: "聖本篤車站 São Bento", desc: "世界最美車站，擁有壯觀壁畫。", map: "https://maps.app.goo.gl/59UpuwZoMWsDMbpD8" },
-                    { city: "波多（Porto）", category: "spot", name: "里貝拉區 Ribeira", desc: "杜羅河畔的歷史老城區。", map: "https://maps.app.goo.gl/dPsKEaAUCw69Bxpx5" },
-                    { city: "波多（Porto）", category: "restaurant", name: "Majestic Café", desc: "全球十大最美咖啡館之一。", map: "https://maps.app.goo.gl/hBAnZ3HsUHMpQHUV8" },
-                    { city: "波多（Porto）", category: "restaurant", name: "Casa Guedes Tradicional", desc: "傳統風味，好吃的豬扒包。", map: "https://maps.app.goo.gl/2k8NFP6kYnRcctY99" },
-                    { city: "波多（Porto）", category: "restaurant", name: "McDonald's - Imperial", desc: "號稱全球最美的麥當勞。", map: "https://maps.app.goo.gl/sTz98GRWHjvoz2Sg7" },
-                    { city: "波多（Porto）", category: "shopping", name: "Claus Porto", desc: "頂級精品香氛與香皂。", map: "https://maps.app.goo.gl/PgpmsQNogecXrnmA9" },
-                    { city: "波多（Porto）", category: "shopping", name: "Castelbel - Palácio das Artes", desc: "精緻的葡萄牙香氛店。", map: "https://maps.app.goo.gl/bhcMVFPeWqV1df3r9" },
-                    { city: "波多（Porto）", category: "restaurant", name: "O Caraças", desc: "便宜划算的一餐。", map: "https://maps.app.goo.gl/uiqSvj7zLNsUwha59" },
-                    { city: "波多（Porto）", category: "restaurant", name: "La Ricotta", desc: "優質的在地風味餐廳。", map: "https://maps.app.goo.gl/TH1q3kKRTe5FhJFm8" },
-                    { city: "波多（Porto）", category: "restaurant", name: "Adega São Nicolau", desc: "氛圍獨特，像酒窖一樣的餐廳。", map: "https://maps.app.goo.gl/HSiHaQtbCsUCfA5Q9" },
-                    { city: "波多（Porto）", category: "restaurant", name: "Taberna Dos Mercadores", desc: "評價極高的在地酒館餐廳。", map: "https://maps.app.goo.gl/hanPxNtkfSxNMpBs9" },
-                    { city: "波多（Porto）", category: "other", name: "Gaia Cable Car", desc: "搭乘纜車俯瞰杜羅河美景。", map: "https://maps.app.goo.gl/4rBy45uyT7LzgA3i9" },
+                    // --- 波多 (22個) ---
+                    { city: "波多（Porto）", category: "spot", name: "波爾圖主教座堂 Sé do Porto", desc: "波多最古老的古蹟，外觀像一座堡壘，內部迴廊貼滿精美的藍白瓷磚，莊嚴肅穆。", map: "https://maps.app.goo.gl/DbcoTjv5jWVFfcEG6" },
+                    { city: "波多（Porto）", category: "spot", name: "路易一世大橋 Ponte Luís I", desc: "橫跨杜羅河的雙層鐵橋，上層行駛捷運，下層通車，徒步走過可飽覽河岸絕美風光。", map: "https://maps.app.goo.gl/UvcJYzQJ88sSqW8t8" },
+                    { city: "波多（Porto）", category: "spot", name: "萊羅書店 Livraria Lello", desc: "曾被評為世界最美書店，華麗的新哥德式裝潢與紅色旋轉樓梯，是哈利波特迷必朝聖地。", map: "https://maps.app.goo.gl/ykeG1KckNBNS27bh7" },
+                    { city: "波多（Porto）", category: "shopping", name: "Mercado do Bolhão", desc: "波多百年傳統市場，匯集新鮮蔬果、起司與紀念品，是感受在地生活氣息的最佳場所。", map: "https://maps.app.goo.gl/S2iApZ2BF6n4Y7JN7" },
+                    { city: "波多（Porto）", category: "spot", name: "阿瑪斯教堂 Capela das Almas", desc: "教堂外牆覆蓋著滿滿的藍白瓷磚畫，描繪聖人的故事，是波多最吸睛的拍照熱點。", map: "https://maps.app.goo.gl/wVdP9zzYNq3PiM6c7" },
+                    { city: "波多（Porto）", category: "spot", name: "聖本篤車站 São Bento", desc: "獲譽世界最美火車站，大廳兩萬片瓷磚壁畫描繪了葡萄牙的歷史戰爭與常民生活。", map: "https://maps.app.goo.gl/59UpuwZoMWsDMbpD8" },
+                    { city: "波多（Porto）", category: "spot", name: "里貝拉區 Ribeira", desc: "杜羅河畔的歷史城區，五彩繽紛的房舍錯落有致，登錄為世界文化遺產，充滿迷人魅力。", map: "https://maps.app.goo.gl/dPsKEaAUCw69Bxpx5" },
+                    { city: "波多（Porto）", category: "restaurant", name: "Majestic Café", desc: "創業於1921年，華麗的「美好年代」風格裝潢，被譽為世界十大最美咖啡館之一。", map: "https://maps.app.goo.gl/hBAnZ3HsUHMpQHUV8" },
+                    { city: "波多（Porto）", category: "restaurant", name: "Casa Guedes Tradicional", desc: "在地人最愛的平價美食，招牌烤豬肉三明治肉嫩多汁，配上特製起司更是絕配。", map: "https://maps.app.goo.gl/2k8NFP6kYnRcctY99" },
+                    { city: "波多（Porto）", category: "restaurant", name: "McDonald's - Imperial", desc: "前身為帝國咖啡館，保留了水晶吊燈與彩繪玻璃，被稱為全球最豪華唯美的麥當勞。", map: "https://maps.app.goo.gl/sTz98GRWHjvoz2Sg7" },
+                    { city: "波多（Porto）", category: "shopping", name: "Claus Porto", desc: "葡萄牙皇室御用的百年香氛品牌，精緻復古的包裝設計，宛如藝術品般值得收藏。", map: "https://maps.app.goo.gl/PgpmsQNogecXrnmA9" },
+                    { city: "波多（Porto）", category: "shopping", name: "Castelbel - Palácio das Artes", desc: "來自波多的頂級香氛品牌，以清新優雅的花果香調聞名，是提升居家生活質感的首選。", map: "https://maps.app.goo.gl/bhcMVFPeWqV1df3r9" },
+                    { city: "波多（Porto）", category: "restaurant", name: "O Caraças", desc: "隱身巷弄的家庭式餐館，提供物美價廉的道地葡式料理，充滿濃厚的人情味。", map: "https://maps.app.goo.gl/uiqSvj7zLNsUwha59" },
+                    { city: "波多（Porto）", category: "restaurant", name: "La Ricotta", desc: "評價極高的義葡融合料理，燈光美氣氛佳，餐點精緻美味，是約會聚餐的好選擇。", map: "https://maps.app.goo.gl/TH1q3kKRTe5FhJFm8" },
+                    { city: "波多（Porto）", category: "restaurant", name: "Adega São Nicolau", desc: "位於河岸旁的傳統餐館，內部如酒窖般溫馨，提供新鮮海鮮與道地章魚料理。", map: "https://maps.app.goo.gl/HSiHaQtbCsUCfA5Q9" },
+                    { city: "波多（Porto）", category: "restaurant", name: "Taberna Dos Mercadores", desc: "座位不多的精緻小酒館，鹽焗魚與海鮮燉飯表現出色，建議務必提前訂位。", map: "https://maps.app.goo.gl/hanPxNtkfSxNMpBs9" },
+                    { city: "波多（Porto）", category: "other", name: "Gaia Cable Car", desc: "搭乘纜車從高空俯瞰杜羅河與波多舊城區，視野開闊，夕陽時分景色更為迷人。", map: "https://maps.app.goo.gl/4rBy45uyT7LzgA3i9" },
                     
-                    // --- 波多酒莊 ---
-                    { city: "波多（Porto）", category: "winery", name: "Caves Ferreira", desc: "歷史悠久的波特酒莊。", map: "https://maps.app.goo.gl/NicYzT43qeWz4E8p9" },
-                    { city: "波多（Porto）", category: "winery", name: "Casa Ferreirinha", desc: "優質波特酒與葡萄酒莊。", map: "https://maps.app.goo.gl/V252wDcWCMfsYyHy5" },
-                    { city: "波多（Porto）", category: "winery", name: "Graham's Port Lodge", desc: "知名波特酒莊，提供品酒體驗。", map: "https://maps.app.goo.gl/TA6GgJtcUF9MLFwo8" },
-                    { city: "波多（Porto）", category: "winery", name: "Caves Cálem", desc: "河岸知名酒莊，常有 Fado 表演。", map: "https://maps.app.goo.gl/NFCfa7KviMC68tJ96" },
-                    { city: "波多（Porto）", category: "winery", name: "Sandeman", desc: "標誌性造型的全球知名波特酒莊。", map: "https://maps.app.goo.gl/8RiCAKHYGvaXSL7r7" }
+                    // --- 波多酒莊 (5個) ---
+                    { city: "波多（Porto）", category: "winery", name: "Caves Ferreira", desc: "創立於1751年，由傳奇女性經營的本土酒莊，可深入了解波特酒的歷史與釀造過程。", map: "https://maps.app.goo.gl/NicYzT43qeWz4E8p9" },
+                    { city: "波多（Porto）", category: "winery", name: "Casa Ferreirinha", desc: "以釀造高品質Douro紅酒聞名，是著名的Barca Velha生產者，展現葡萄牙紅酒的實力。", map: "https://maps.app.goo.gl/V252wDcWCMfsYyHy5" },
+                    { city: "波多（Porto）", category: "winery", name: "Graham's Port Lodge", desc: "位於高處的知名酒莊，擁有眺望路易一世大橋的絕佳視野，導覽與品酒體驗非常專業。", map: "https://maps.app.goo.gl/TA6GgJtcUF9MLFwo8" },
+                    { city: "波多（Porto）", category: "winery", name: "Caves Cálem", desc: "河岸最顯眼的酒莊之一，結合了導覽、品酒與傳統法朵(Fado)表演，深受遊客歡迎。", map: "https://maps.app.goo.gl/NFCfa7KviMC68tJ96" },
+                    { city: "波多（Porto）", category: "winery", name: "Sandeman", desc: "識別度極高的斗篷人商標，提供生動有趣的導覽行程，是全球知名的波特酒品牌。", map: "https://maps.app.goo.gl/8RiCAKHYGvaXSL7r7" }
                 ]);
 
-                // 篩選邏輯：新增 '全區' 的判斷
+                // 篩選邏輯
                 const filteredList = computed(() => {
                     return data.value.filter(item => {
                         const cityMatch = currentCity.value === "全區" || item.city === currentCity.value;
